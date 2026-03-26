@@ -1,0 +1,29 @@
+[
+  {
+    "code": "weekly-7-days",
+    "name": "7 Hari",
+    "description": "Akses subscription penuh selama 7 hari",
+    "price": 70000,
+    "durationDays": 7,
+    "isLifetime": false,
+    "isActive": true
+  },
+  {
+    "code": "monthly-30-days",
+    "name": "1 Bulan",
+    "description": "Akses subscription penuh selama 30 hari",
+    "price": 150000,
+    "durationDays": 30,
+    "isLifetime": false,
+    "isActive": true
+  },
+  {
+    "code": "lifetime",
+    "name": "Lifetime",
+    "description": "Akses subscription seumur hidup tanpa tanggal kedaluwarsa",
+    "price": 350000,
+    "durationDays": null,
+    "isLifetime": true,
+    "isActive": true
+  }
+]
