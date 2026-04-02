@@ -78,6 +78,10 @@ const baseNavItems = [
       {
         title: "UGC Affiliate",
         url: "/dashboard/ugc-affiliate",
+      },
+      {
+        title: "Motion Control",
+        url: "/dashboard/motion-control",
       }
     ],
   },
