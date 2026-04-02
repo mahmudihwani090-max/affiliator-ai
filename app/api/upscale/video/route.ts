@@ -28,7 +28,9 @@ export async function OPTIONS() {
  * {
  *   "success": boolean,
  *   "jobId": string,              // Poll this job for completion
- *   "remainingCredits": number
+ *   "videoUrl"?: string,
+ *   "status"?: string,
+ *   "queuePosition"?: number
  * }
  */
 export async function POST(request: NextRequest) {
@@ -74,7 +76,8 @@ export async function POST(request: NextRequest) {
             success: true,
             jobId: result.jobId,
             videoUrl: result.videoUrl,
-            remainingCredits: result.remainingCredits,
+            status: result.status,
+            queuePosition: result.queuePosition,
         }, { headers: corsHeaders })
 
     } catch (error) {

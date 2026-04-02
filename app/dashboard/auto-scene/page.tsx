@@ -952,7 +952,13 @@ export default function AutoScenePage() {
                                                 <Button
                                                     variant="outline"
                                                     className="w-full border-gray-200 bg-transparent text-foreground hover:bg-gray-100 dark:border-white/10 dark:hover:bg-white/5"
-                                                    onClick={() => downloadImage(scene.imageUrl, `${scene.id}.jpg`)}
+                                                    onClick={() => {
+                                                        if (!scene.imageUrl) {
+                                                            return
+                                                        }
+
+                                                        downloadImage(scene.imageUrl, `${scene.id}.jpg`)
+                                                    }}
                                                 >
                                                     <Download className="mr-2 h-4 w-4" />
                                                     Download Scene
@@ -974,7 +980,13 @@ export default function AutoScenePage() {
                                                         <Button
                                                             variant="outline"
                                                             className="w-full border-gray-200 bg-transparent text-foreground hover:bg-gray-100 dark:border-white/10 dark:hover:bg-white/5"
-                                                            onClick={() => downloadVideo(scene.videoUrl, `${scene.id}.mp4`)}
+                                                            onClick={() => {
+                                                                if (!scene.videoUrl) {
+                                                                    return
+                                                                }
+
+                                                                downloadVideo(scene.videoUrl, `${scene.id}.mp4`)
+                                                            }}
                                                         >
                                                             <Download className="mr-2 h-4 w-4" />
                                                             Download Video

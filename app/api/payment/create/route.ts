@@ -12,6 +12,18 @@ export async function POST(request: NextRequest) {
   }
 
   try {
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { id: true },
+    });
+
+    if (!user) {
+      return NextResponse.json(
+        { error: "Sesi Anda sudah tidak valid. Silakan login ulang." },
+        { status: 401 }
+      );
+    }
+
     const { planCode, plan, websiteCode, originSite } = await request.json();
     const selectedPlanCode = planCode || plan;
 
@@ -34,13 +46,13 @@ export async function POST(request: NextRequest) {
     const siteContext = resolvePaymentSiteContext(request, { websiteCode, originSite });
     const orderId = buildPaymentOrderId({
       websiteCode: siteContext.websiteCode,
-      userId: session.user.id,
+      userId: user.id,
     });
 
     // Create transaction record
     const transaction = await prisma.transaction.create({
       data: {
-        userId: session.user.id,
+        userId: user.id,
         planId: subscriptionPlan.id,
         orderId,
         amount: subscriptionPlan.price,

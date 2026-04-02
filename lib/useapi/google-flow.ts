@@ -401,6 +401,7 @@ export async function uploadGoogleFlowAsset(params: {
   maxRetries?: number
 }) {
   const path = params.email ? `/assets/${encodeURIComponent(params.email)}` : "/assets"
+  const requestBody = new Uint8Array(params.binaryData).buffer
   const { data } = await requestGoogleFlow<{
     email?: string
     width?: number
@@ -413,7 +414,7 @@ export async function uploadGoogleFlowAsset(params: {
       headers: buildRequestHeaders({
         "Content-Type": params.contentType,
       }),
-      body: params.binaryData,
+      body: requestBody,
     },
     {
       maxRetries: params.maxRetries,

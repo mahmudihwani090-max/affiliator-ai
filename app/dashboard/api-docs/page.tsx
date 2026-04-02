@@ -797,8 +797,9 @@ const { jobId } = await response.json();
                             language="json"
                             code={`{
   "success": true,
-  "jobId": "j1737312345678v-...",
-  "remainingCredits": 99.5
+    "jobId": "j1737312345678v-...",
+    "status": "queued",
+    "queuePosition": 2
 }`}
                         />
 

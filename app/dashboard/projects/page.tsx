@@ -48,9 +48,18 @@ export default function ProjectsPage() {
 
   const fetchProjects = async () => {
     setLoading(true)
-    const res = await getProjects()
-    if (res.success) setProjects(res.projects as unknown as Project[])
-    setLoading(false)
+    try {
+      const res = await getProjects()
+      if (res.success) {
+        setProjects(res.projects as unknown as Project[])
+      } else if (res.error && res.error !== "Unauthorized") {
+        toast.error(res.error)
+      }
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Gagal memuat project")
+    } finally {
+      setLoading(false)
+    }
   }
 
   useEffect(() => { fetchProjects() }, [])
@@ -58,15 +67,19 @@ export default function ProjectsPage() {
   const handleCreate = async () => {
     if (!createName.trim()) return
     setCreating(true)
-    const res = await createProject(createName.trim(), createDesc.trim() || undefined)
-    if (res.success) {
-      toast.success("Project berhasil dibuat!")
-      setCreateOpen(false)
-      setCreateName("")
-      setCreateDesc("")
-      fetchProjects()
-    } else {
-      toast.error(res.error || "Gagal membuat project")
+    try {
+      const res = await createProject(createName.trim(), createDesc.trim() || undefined)
+      if (res.success) {
+        toast.success("Project berhasil dibuat!")
+        setCreateOpen(false)
+        setCreateName("")
+        setCreateDesc("")
+        fetchProjects()
+      } else {
+        toast.error(res.error || "Gagal membuat project")
+      }
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Gagal membuat project")
     }
     setCreating(false)
   }
@@ -74,25 +87,33 @@ export default function ProjectsPage() {
   const handleEdit = async () => {
     if (!editProject || !editName.trim()) return
     setEditing(true)
-    const res = await updateProject(editProject.id, editName.trim(), editDesc.trim() || undefined)
-    if (res.success) {
-      toast.success("Project diperbarui!")
-      setEditOpen(false)
-      fetchProjects()
-    } else {
-      toast.error(res.error || "Gagal memperbarui project")
+    try {
+      const res = await updateProject(editProject.id, editName.trim(), editDesc.trim() || undefined)
+      if (res.success) {
+        toast.success("Project diperbarui!")
+        setEditOpen(false)
+        fetchProjects()
+      } else {
+        toast.error(res.error || "Gagal memperbarui project")
+      }
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Gagal memperbarui project")
     }
     setEditing(false)
   }
 
   const handleDelete = async (project: Project) => {
     if (!confirm(`Hapus project "${project.name}"?`)) return
-    const res = await deleteProject(project.id)
-    if (res.success) {
-      toast.success("Project dihapus")
-      fetchProjects()
-    } else {
-      toast.error("Gagal menghapus project")
+    try {
+      const res = await deleteProject(project.id)
+      if (res.success) {
+        toast.success("Project dihapus")
+        fetchProjects()
+      } else {
+        toast.error(res.error || "Gagal menghapus project")
+      }
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Gagal menghapus project")
     }
   }
 

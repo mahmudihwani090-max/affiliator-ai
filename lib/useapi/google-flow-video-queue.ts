@@ -136,6 +136,9 @@ function logQueueFailure(params: {
   logGenerationFailure({
     kind: isImageQueueOperation(params.operation) ? "image" : "video",
     ...params,
+    providerJobId: params.providerJobId ?? undefined,
+    prompt: params.prompt ?? undefined,
+    aspectRatio: params.aspectRatio ?? undefined,
   })
 }
 
@@ -311,24 +314,30 @@ async function submitQueuedQueueItem(queueItemId: string) {
     return
   }
 
+  const requestPayload = item.requestPayload
+
   try {
     const imageSubmission = isImageQueueOperation(item.operation)
-      ? await submitImageQueueItemWithFallback(item)
+      ? await submitImageQueueItemWithFallback({
+          operation: item.operation,
+          requestPayload,
+          model: item.model,
+        })
       : null
 
     const submitResult = imageSubmission
       ? imageSubmission.submitResult
       : item.operation === "upscaleVideo"
-        ? await submitGoogleFlowVideoUpscale(item.requestPayload, {
+        ? await submitGoogleFlowVideoUpscale(requestPayload, {
             enableWebhook: true,
             replyRef: item.id,
           })
         : item.operation === "extendVideo"
-          ? await submitGoogleFlowVideoExtend(item.requestPayload, {
+          ? await submitGoogleFlowVideoExtend(requestPayload, {
               enableWebhook: true,
               replyRef: item.id,
             })
-          : await submitGoogleFlowVideo(item.requestPayload, {
+          : await submitGoogleFlowVideo(requestPayload, {
               enableWebhook: true,
               replyRef: item.id,
             })
@@ -354,18 +363,26 @@ async function submitQueuedQueueItem(queueItemId: string) {
         status: "completed",
         completedAt: new Date(),
         model: imageSubmission?.modelUsed || item.model,
-        resultPayload: serializePayload({
-          submission: submitResult.raw,
-          ...(isImageQueueOperation(item.operation)
-            ? {
-                imageUrl: extractEncodedImageDataUrl(submitResult.raw) || (submitResult as GoogleFlowImageSubmissionResult).imageUrls[0],
-                imageUrls: (submitResult as GoogleFlowImageSubmissionResult).imageUrls,
-              }
-            : {
-                videoUrls: submitResult.videoUrls,
-              }),
-          mediaGenerationId: submitResult.mediaGenerationId,
-        }),
+          resultPayload: serializePayload(
+            imageSubmission
+              ? {
+                  submission: imageSubmission.submitResult.raw,
+                  imageUrl:
+                    extractEncodedImageDataUrl(imageSubmission.submitResult.raw) ||
+                    imageSubmission.submitResult.imageUrls[0],
+                  imageUrls: imageSubmission.submitResult.imageUrls,
+                  mediaGenerationId: imageSubmission.submitResult.mediaGenerationId,
+                }
+              : "videoUrls" in submitResult
+                ? {
+                    submission: submitResult.raw,
+                    videoUrls: submitResult.videoUrls,
+                    mediaGenerationId: submitResult.mediaGenerationId,
+                  }
+                : (() => {
+                    throw new Error("Invalid video submission result")
+                  })()
+          ),
       },
     })
 
