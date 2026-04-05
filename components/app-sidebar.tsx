@@ -135,7 +135,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
             <Image src="/affiliator.png" alt="Logo" width={32} height={32} className="size-8 object-contain" />
           </div>
           <div className="grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
-            <span className="truncate font-semibold">Affiliator Pro</span>
+            <span className="truncate font-semibold">Alpha Studio</span>
           </div>
         </div>
       </SidebarHeader>

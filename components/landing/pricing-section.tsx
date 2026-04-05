@@ -58,7 +58,7 @@ export async function PricingSection() {
     name: plan.name,
     price: formatPlanPrice(plan.price),
     duration: getPlanDuration(plan.durationDays, plan.isLifetime),
-    description: plan.description || 'Paket subscription AFFILIATOR PRO',
+    description: plan.description || 'Paket subscription Alpha Studio',
     features: getPlanFeatures(plan),
     popular: plan.code === 'monthly-30-days',
     gradient: pricingGradientMap[plan.code] || 'from-slate-500 to-slate-700',

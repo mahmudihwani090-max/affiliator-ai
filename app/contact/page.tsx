@@ -216,7 +216,7 @@ export default function ContactPage() {
             {/* Footer */}
             <footer className="border-t bg-white/50 dark:bg-slate-900/50 py-8 mt-12">
                 <div className="max-w-4xl mx-auto px-4 text-center text-sm text-slate-600 dark:text-slate-400">
-                    <p>© {new Date().getFullYear()} Affiliator Pro. All rights reserved.</p>
+                    <p>© {new Date().getFullYear()} Alpha Studio. All rights reserved.</p>
                 </div>
             </footer>
         </div>

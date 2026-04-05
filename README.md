@@ -1,4 +1,4 @@
-# 🚀 Affiliator Pro - Next.js Version
+# 🚀 Alpha Studio - Next.js Version
 
 Platform AI lengkap untuk afiliator TikTok & Shopee Indonesia dengan authentication dan database.
 

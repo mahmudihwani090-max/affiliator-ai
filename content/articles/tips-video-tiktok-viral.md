@@ -2,7 +2,7 @@
 title: "5 Tips Membuat Video TikTok yang Viral dengan AI"
 description: "Strategi dan tips praktis untuk membuat video TikTok yang viral menggunakan AI Video Generator. Tingkatkan engagement dan penjualan affiliate Anda."
 category: "Tips"
-author: "Tim Affiliator Pro"
+author: "Tim Alpha Studio"
 date: "2026-01-20"
 readTime: "6 min read"
 image: "/images/blog/tiktok-viral.jpg"
@@ -36,7 +36,7 @@ Pengguna TikTok memiliki attention span yang sangat pendek. Anda harus menarik p
 
 ### Tip 2: Gunakan AI untuk Visual Cinematic
 
-AI Video Generator dari Affiliator Pro menggunakan teknologi Google Veo untuk menghasilkan video berkualitas sinematik.
+AI Video Generator dari Alpha Studio menggunakan teknologi Google Veo untuk menghasilkan video berkualitas sinematik.
 
 **Prompt yang direkomendasikan:**
 ```
@@ -77,7 +77,7 @@ Tentukan produk apa yang ingin dipromosikan dan angle yang unique.
 Buat prompt yang detail untuk AI Video Generator.
 
 ### Step 3: Generate Video
-Gunakan Affiliator Pro untuk generate video. Eksperimen dengan berbagai style.
+Gunakan Alpha Studio untuk generate video. Eksperimen dengan berbagai style.
 
 ### Step 4: Edit dan Polish
 Tambahkan teks, musik, dan efek menggunakan CapCut atau aplikasi editing lainnya.
@@ -99,7 +99,7 @@ Tambahkan teks, musik, dan efek menggunakan CapCut atau aplikasi editing lainnya
 
 Membuat video viral di TikTok membutuhkan kombinasi kreativitas, konsistensi, dan tools yang tepat. Dengan AI Video Generator, Anda bisa menghasilkan konten berkualitas tinggi tanpa skill editing yang advanced.
 
-Mulai eksperimen dengan Video Generator di Affiliator Pro dan lihat perbedaannya dalam engagement dan penjualan Anda!
+Mulai eksperimen dengan Video Generator di Alpha Studio dan lihat perbedaannya dalam engagement dan penjualan Anda!
 
 ---
 

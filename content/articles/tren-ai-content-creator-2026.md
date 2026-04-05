@@ -2,7 +2,7 @@
 title: "Tren AI untuk Content Creator di 2026: Apa yang Harus Anda Ketahui"
 description: "Eksplorasi tren teknologi AI terbaru yang akan mengubah cara content creator bekerja di tahun 2026 dan seterusnya."
 category: "Tren"
-author: "Tim Affiliator Pro"
+author: "Tim Alpha Studio"
 date: "2026-01-28"
 readTime: "5 min read"
 image: "/images/blog/ai-trends-2026.jpg"
@@ -122,7 +122,7 @@ AI bukan ancaman untuk content creator—ini adalah superpower. Creator yang bis
 
 Yang jelas, future belongs to those who adapt. Mulai belajar dan eksperimen sekarang, jangan tunggu sampai terlambat.
 
-Affiliator Pro hadir untuk membantu Anda stay ahead dalam era AI content creation.
+Alpha Studio hadir untuk membantu Anda stay ahead dalam era AI content creation.
 
 ---
 

@@ -1,7 +1,7 @@
 /**
- * Google Flow Image Generation Utility - Affiliator Pro
+ * Google Flow Image Generation Utility - Alpha Studio
  * Utility untuk generate gambar via Google AI Sandbox (labs.google)
- * Uses Affiliator Pro Extension to bypass CORS
+ * Uses Alpha Studio Extension to bypass CORS
  * Prefix: AFFILIATOR_PRO_
  */
 

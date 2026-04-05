@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     }
 
     return {
-        title: `${article.title} - Affiliator Pro`,
+        title: `${article.title} - Alpha Studio`,
         description: article.description,
     };
 }
@@ -110,7 +110,7 @@ export default async function ArticlePage({ params }: Props) {
                 <div className="mt-12 text-center">
                     <Card className="dark:bg-slate-900/50 dark:border-slate-800 p-8">
                         <h3 className="text-xl font-semibold mb-2 dark:text-white">
-                            Siap mencoba Affiliator Pro?
+                            Siap mencoba Alpha Studio?
                         </h3>
                         <p className="text-slate-600 dark:text-slate-400 mb-4">
                             Generate gambar dan video berkualitas tinggi dengan AI
@@ -128,7 +128,7 @@ export default async function ArticlePage({ params }: Props) {
             {/* Footer */}
             <footer className="border-t bg-white/50 dark:bg-slate-900/50 py-8 mt-12">
                 <div className="max-w-4xl mx-auto px-4 text-center text-sm text-slate-600 dark:text-slate-400">
-                    <p>© {new Date().getFullYear()} Affiliator Pro. All rights reserved.</p>
+                    <p>© {new Date().getFullYear()} Alpha Studio. All rights reserved.</p>
                 </div>
             </footer>
         </div>

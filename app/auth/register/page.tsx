@@ -76,7 +76,7 @@ export default function RegisterPage() {
           <div className="w-16 h-16 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center text-white font-bold text-2xl mx-auto mb-4">
             A
           </div>
-          <h1 className="text-3xl font-bold text-slate-800 dark:text-white">Affiliator Pro</h1>
+          <h1 className="text-3xl font-bold text-slate-800 dark:text-white">Alpha Studio</h1>
           <p className="text-slate-600 dark:text-slate-300 mt-2">Buat akun baru</p>
         </div>
 

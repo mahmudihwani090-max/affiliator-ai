@@ -155,12 +155,34 @@ function getBackgroundDirection(backgroundStyle: string) {
     : `Use the uploaded background reference and art-direct it toward this environment style: ${backgroundStyle}.`
 }
 
+function buildSceneContinuityDirection(params: {
+  index: number
+  totalScenes: number
+  scene: AutoSceneBlueprint
+  previousScene?: AutoSceneBlueprint
+  nextScene?: AutoSceneBlueprint
+}) {
+  const continuityNotes = [
+    params.previousScene
+      ? `Visually continue from the previous scene (${params.previousScene.title}) by keeping the same campaign world, model identity, wardrobe direction, lighting family, palette, and environment logic instead of resetting the ad.`
+      : "Establish a strong visual world that the following scenes can evolve from without changing the core styling, environment DNA, or campaign mood.",
+    params.nextScene
+      ? `Set up a natural bridge toward the next scene (${params.nextScene.title}) so the storyboard reads like one flowing sequence instead of disconnected stills.`
+      : "Resolve the storyboard naturally while preserving the same visual identity built in the earlier scenes.",
+    `Only change the camera distance, subject action, or composition emphasis needed for ${params.scene.title}; do not introduce a random new setting, styling reset, or unrelated emotional tone.`,
+  ]
+
+  return continuityNotes.join(" ")
+}
+
 function buildSceneSpecificPrompt(params: {
   scene: AutoSceneBlueprint
   index: number
   totalScenes: number
   hook: string
   callToAction: string
+  previousScene?: AutoSceneBlueprint
+  nextScene?: AutoSceneBlueprint
 }) {
   const isOpeningScene = params.index === 0
   const isClosingScene = params.index === params.totalScenes - 1
@@ -169,6 +191,13 @@ function buildSceneSpecificPrompt(params: {
     `This is scene ${params.index + 1} of ${params.totalScenes}.`,
     isOpeningScene ? getHookVisualDirection(params.hook) : "This scene should progress the marketing narrative naturally from the previous scene.",
     isClosingScene ? getClosingCtaDirection(params.callToAction) : "Do not make this scene feel like a final end card yet.",
+    buildSceneContinuityDirection({
+      index: params.index,
+      totalScenes: params.totalScenes,
+      scene: params.scene,
+      previousScene: params.previousScene,
+      nextScene: params.nextScene,
+    }),
     `Scene role: ${params.scene.narrativeRole}`,
     params.scene.direction,
   ].join(" ")
@@ -199,6 +228,8 @@ export function buildAutoScenePrompts(config: AutoSceneFormConfig): AutoScenePro
     "Use the uploaded background reference as the environment anchor and maintain consistent atmosphere, palette, spatial logic, and production design.",
     "Maintain realistic anatomy, realistic hands, clean luxury styling, premium commercial photography, and consistent brand aesthetics.",
     "Prioritize clear product readability, believable interaction, and a commercial result that matches the requested audience and market positioning.",
+    "Treat all scenes as consecutive beats from one campaign shoot, not separate ads generated independently.",
+    "Preserve the same styling logic, wardrobe direction, lighting family, and environment DNA across the entire storyboard unless a tighter crop or detail shot is specifically needed.",
     "Make each scene feel intentionally different while still belonging to the same campaign world.",
     "No text, no watermark, no collage, no split-screen.",
   ].join(" ")
@@ -212,6 +243,8 @@ export function buildAutoScenePrompts(config: AutoSceneFormConfig): AutoScenePro
       totalScenes: selectedScenes.length,
       hook: config.hook,
       callToAction: config.callToAction,
+      previousScene: selectedScenes[index - 1],
+      nextScene: selectedScenes[index + 1],
     })}`,
   }))
 }

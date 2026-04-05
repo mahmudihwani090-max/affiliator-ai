@@ -26,14 +26,14 @@ export default function TermsOfServicePage() {
                         <section className="mb-8">
                             <h2 className="text-xl font-semibold mb-4">1. Penerimaan Syarat</h2>
                             <p className="text-slate-600 dark:text-slate-400 mb-4">
-                                Dengan mengakses dan menggunakan layanan Affiliator Pro ("Layanan"), Anda menyetujui untuk terikat oleh Syarat dan Ketentuan ini. Jika Anda tidak setuju dengan bagian mana pun dari syarat ini, Anda tidak boleh mengakses Layanan.
+                                Dengan mengakses dan menggunakan layanan Alpha Studio ("Layanan"), Anda menyetujui untuk terikat oleh Syarat dan Ketentuan ini. Jika Anda tidak setuju dengan bagian mana pun dari syarat ini, Anda tidak boleh mengakses Layanan.
                             </p>
                         </section>
 
                         <section className="mb-8">
                             <h2 className="text-xl font-semibold mb-4">2. Deskripsi Layanan</h2>
                             <p className="text-slate-600 dark:text-slate-400 mb-4">
-                                Affiliator Pro adalah platform berbasis AI yang menyediakan layanan pembuatan konten digital, termasuk:
+                                Alpha Studio adalah platform berbasis AI yang menyediakan layanan pembuatan konten digital, termasuk:
                             </p>
                             <ul className="list-disc list-inside text-slate-600 dark:text-slate-400 space-y-2">
                                 <li>Image Generator - Pembuatan gambar dengan AI</li>
@@ -140,7 +140,7 @@ export default function TermsOfServicePage() {
             {/* Footer */}
             <footer className="border-t bg-white/50 dark:bg-slate-900/50 py-8">
                 <div className="max-w-4xl mx-auto px-4 text-center text-sm text-slate-600 dark:text-slate-400">
-                    <p>© 2026 Affiliator Pro. All rights reserved.</p>
+                    <p>© 2026 Alpha Studio. All rights reserved.</p>
                 </div>
             </footer>
         </div>

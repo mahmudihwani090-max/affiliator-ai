@@ -11,7 +11,7 @@ export function BenefitsSection() {
       <div className="max-w-7xl mx-auto">
         <FadeInUpView className="text-center mb-16">
           <Badge className="mb-4 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300">
-            Keunggulan AFFILIATOR PRO
+            Keunggulan Alpha Studio          
           </Badge>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 dark:text-white mb-4">
             Unlimited • Fast • Easy

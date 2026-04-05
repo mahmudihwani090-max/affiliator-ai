@@ -3,7 +3,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 
 export const metadata: Metadata = {
-  title: "Affiliator Pro - AI-Powered Content Creation",
+  title: "Alpha Studio - AI-Powered Content Creation",
   description: "Create professional marketing content with AI - Copywriting, Images, Videos, and More",
   icons: {
     icon: '/favicon.ico',

@@ -30,7 +30,7 @@ export default async function LandingPage() {
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-center gap-2 mb-4">
             <Sparkles className="w-5 h-5 text-primary" />
-            <span className="text-lg font-bold text-foreground">AFFILIATOR PRO</span>
+            <span className="text-lg font-bold text-foreground">Alpha Studio</span>
           </div>
           <p className="text-slate-400 mb-6 text-sm text-center">
             Platform AI terlengkap untuk afiliator Indonesia
@@ -53,7 +53,7 @@ export default async function LandingPage() {
           </div>
 
           <p className="text-sm text-slate-500 text-center">
-            © {new Date().getFullYear()} AFFILIATOR PRO. Powered by Gemini 2.5 & Veo AI.
+            © {new Date().getFullYear()} Alpha Studio. Powered by Gemini 2.5 & Veo AI.
           </p>
         </div>
       </footer>

@@ -1,6 +1,6 @@
 /**
- * Extension Client Utility - Affiliator Pro
- * Handles communication with the Affiliator Pro Chrome Extension
+ * Extension Client Utility - Alpha Studio
+ * Handles communication with the Alpha Studio Chrome Extension
  * Prefix: AFFILIATOR_PRO_
  */
 
@@ -13,7 +13,7 @@ interface ExtensionResponse {
 }
 
 /**
- * Detect if the Affiliator Pro extension is installed and active
+ * Detect if the Alpha Studio extension is installed and active
  */
 export async function checkExtensionPresence(): Promise<boolean> {
     if (typeof window === 'undefined') return false;

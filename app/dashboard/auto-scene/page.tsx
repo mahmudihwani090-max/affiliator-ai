@@ -493,7 +493,8 @@ export default function AutoScenePage() {
             messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
         }, 50)
 
-        const referenceImages = [productImages[0], modelImage, backgroundImage]
+        const baseReferenceImages = [productImages[0], modelImage, backgroundImage]
+        let continuityReferenceImage: string | undefined
         let completed = 0
 
         try {
@@ -505,6 +506,10 @@ export default function AutoScenePage() {
                 )))
 
                 try {
+                    const referenceImages = continuityReferenceImage
+                        ? [productImages[0], modelImage, continuityReferenceImage]
+                        : baseReferenceImages
+
                     const result = await generateImageToImage({
                         prompt: scene.prompt,
                         referenceImagesBase64: referenceImages,
@@ -524,6 +529,7 @@ export default function AutoScenePage() {
                         throw new Error("Tidak ada gambar yang dihasilkan untuk scene ini")
                     }
 
+                    continuityReferenceImage = imageUrl
                     completed += 1
                     setSceneFrames((prev) => prev.map((frame) => (
                         frame.id === scene.id

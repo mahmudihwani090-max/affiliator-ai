@@ -1,7 +1,7 @@
 {
     "info": {
-        "name": "Affiliator Pro API",
-        "description": "API collection for Affiliator Pro - Image and Video Generation",
+        "name": "Alpha API",
+        "description": "API collection for Alpha - Image and Video Generation",
         "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
     },
     "auth": {

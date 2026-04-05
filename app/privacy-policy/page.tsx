@@ -26,7 +26,7 @@ export default function PrivacyPolicyPage() {
                         <section className="mb-8">
                             <h2 className="text-xl font-semibold mb-4">1. Pendahuluan</h2>
                             <p className="text-slate-600 dark:text-slate-400 mb-4">
-                                Affiliator Pro ("kami", "kita", atau "milik kami") mengoperasikan platform affiliator.pro (selanjutnya disebut "Layanan"). Halaman ini menginformasikan kepada Anda tentang kebijakan kami mengenai pengumpulan, penggunaan, dan pengungkapan data pribadi ketika Anda menggunakan Layanan kami.
+                                Alpha Studio ("kami", "kita", atau "milik kami") mengoperasikan platform affiliator.pro (selanjutnya disebut "Layanan"). Halaman ini menginformasikan kepada Anda tentang kebijakan kami mengenai pengumpulan, penggunaan, dan pengungkapan data pribadi ketika Anda menggunakan Layanan kami.
                             </p>
                             <p className="text-slate-600 dark:text-slate-400">
                                 Kami menggunakan data Anda untuk menyediakan dan meningkatkan Layanan. Dengan menggunakan Layanan, Anda menyetujui pengumpulan dan penggunaan informasi sesuai dengan kebijakan ini.
@@ -106,7 +106,7 @@ export default function PrivacyPolicyPage() {
             {/* Footer */}
             <footer className="border-t bg-white/50 dark:bg-slate-900/50 py-8">
                 <div className="max-w-4xl mx-auto px-4 text-center text-sm text-slate-600 dark:text-slate-400">
-                    <p>© 2026 Affiliator Pro. All rights reserved.</p>
+                    <p>© 2026 Alpha Studio. All rights reserved.</p>
                 </div>
             </footer>
         </div>

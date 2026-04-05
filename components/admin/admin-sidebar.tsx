@@ -68,7 +68,7 @@ export function AdminSidebar(props: React.ComponentProps<typeof Sidebar>) {
                     <div className="grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
                         <span className="truncate font-semibold">Admin Panel</span>
                         <span className="truncate text-xs text-muted-foreground">
-                            Affiliator Pro
+                            Alpha Studio
                         </span>
                     </div>
                 </div>

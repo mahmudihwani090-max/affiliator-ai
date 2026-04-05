@@ -1,8 +1,8 @@
 ---
-title: "Cara Menggunakan API Affiliator Pro untuk Integrasi Otomatis"
-description: "Panduan teknis menggunakan REST API Affiliator Pro untuk mengintegrasikan fitur AI ke aplikasi atau workflow Anda."
+title: "Cara Menggunakan API Alpha Studio untuk Integrasi Otomatis"
+description: "Panduan teknis menggunakan REST API Alpha Studio untuk mengintegrasikan fitur AI ke aplikasi atau workflow Anda."
 category: "Tutorial"
-author: "Tim Affiliator Pro"
+author: "Tim Alpha Studio"
 date: "2026-01-25"
 readTime: "7 min read"
 image: "/images/blog/api-integration.jpg"
@@ -10,7 +10,7 @@ image: "/images/blog/api-integration.jpg"
 
 ## Pendahuluan
 
-Affiliator Pro tidak hanya menyediakan antarmuka web yang mudah digunakan, tetapi juga REST API yang powerful untuk developer dan power user. Dengan API, Anda bisa mengintegrasikan kemampuan AI ke aplikasi, bot, atau workflow automation Anda.
+Alpha Studio tidak hanya menyediakan antarmuka web yang mudah digunakan, tetapi juga REST API yang powerful untuk developer dan power user. Dengan API, Anda bisa mengintegrasikan kemampuan AI ke aplikasi, bot, atau workflow automation Anda.
 
 ## Keuntungan Menggunakan API
 
@@ -23,7 +23,7 @@ Affiliator Pro tidak hanya menyediakan antarmuka web yang mudah digunakan, tetap
 
 Sebelum mulai, Anda perlu:
 
-1. Login ke dashboard Affiliator Pro
+1. Login ke dashboard Alpha Studio
 2. Buka menu **API Docs**
 3. Klik **Generate API Key**
 4. Simpan API Key dengan aman (hanya ditampilkan sekali)
@@ -209,7 +209,7 @@ Reply dengan gambar/video AI berdasarkan pesan user.
 
 ## Kesimpulan
 
-API Affiliator Pro membuka berbagai kemungkinan untuk otomatisasi dan integrasi. Dengan dokumentasi yang jelas dan endpoint yang powerful, Anda bisa membangun solusi custom sesuai kebutuhan bisnis.
+API Alpha Studio membuka berbagai kemungkinan untuk otomatisasi dan integrasi. Dengan dokumentasi yang jelas dan endpoint yang powerful, Anda bisa membangun solusi custom sesuai kebutuhan bisnis.
 
 Mulai eksplorasi API di halaman [API Docs](/dashboard/api-docs) atau hubungi kami untuk kebutuhan enterprise.
 

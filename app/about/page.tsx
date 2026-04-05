@@ -25,7 +25,7 @@ export default function AboutPage() {
                         Tentang Kami
                     </Badge>
                     <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4">
-                        Affiliator Pro
+                        Alpha Studio
                     </h1>
                     <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
                         Platform AI generatif terdepan untuk kreator konten dan affiliate marketer di Indonesia
@@ -142,7 +142,7 @@ export default function AboutPage() {
             {/* Footer */}
             <footer className="border-t bg-white/50 dark:bg-slate-900/50 py-8 mt-12">
                 <div className="max-w-4xl mx-auto px-4 text-center text-sm text-slate-600 dark:text-slate-400">
-                    <p>© {new Date().getFullYear()} Affiliator Pro. All rights reserved.</p>
+                    <p>© {new Date().getFullYear()} Alpha Studio. All rights reserved.</p>
                 </div>
             </footer>
         </div>

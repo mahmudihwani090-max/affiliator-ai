@@ -2,7 +2,7 @@
 title: "Apa Itu Affiliate Marketing? Panduan Lengkap untuk Pemula"
 description: "Pelajari dasar-dasar affiliate marketing, cara kerjanya, dan bagaimana memulai bisnis affiliate yang menghasilkan passive income."
 category: "Panduan"
-author: "Tim Affiliator Pro"
+author: "Tim Alpha Studio"
 date: "2026-01-10"
 readTime: "10 min read"
 image: "/images/blog/affiliate-marketing-basics.jpg"
@@ -114,7 +114,7 @@ Jangan promosi produk hanya karena komisinya tinggi. Reputasi lebih penting.
 Posting secara teratur. Algoritma social media menyukai konsistensi.
 
 ### 5. Gunakan Tools yang Tepat
-Tools seperti Affiliator Pro membantu Anda membuat konten berkualitas dengan cepat menggunakan AI.
+Tools seperti Alpha Studio membantu Anda membuat konten berkualitas dengan cepat menggunakan AI.
 
 ## Berapa Penghasilan Affiliate Marketer?
 
@@ -133,10 +133,10 @@ Penghasilan bervariasi tergantung effort dan strategi:
 
 Affiliate marketing adalah peluang bisnis yang menjanjikan untuk siapa saja yang mau belajar dan konsisten. Dengan strategi yang tepat dan tools yang mendukung, Anda bisa membangun passive income yang sustainable.
 
-Affiliator Pro hadir untuk membantu Anda membuat konten berkualitas dengan teknologi AI, sehingga Anda bisa fokus pada strategi dan pertumbuhan bisnis.
+Alpha Studio hadir untuk membantu Anda membuat konten berkualitas dengan teknologi AI, sehingga Anda bisa fokus pada strategi dan pertumbuhan bisnis.
 
 Siap memulai perjalanan affiliate marketing Anda?
 
 ---
 
-*Ada pertanyaan tentang affiliate marketing? Hubungi kami melalui halaman [Kontak](/contact) atau mulai gratis di [Affiliator Pro](/auth/register).*
+*Ada pertanyaan tentang affiliate marketing? Hubungi kami melalui halaman [Kontak](/contact) atau mulai gratis di [Alpha Studio](/auth/register).*

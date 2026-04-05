@@ -2,7 +2,7 @@
 title: "Panduan Lengkap Generate Gambar dengan AI untuk Affiliate Marketing"
 description: "Pelajari cara menggunakan AI Image Generator untuk membuat gambar produk yang menarik dan profesional untuk konten affiliate marketing Anda."
 category: "Tutorial"
-author: "Tim Affiliator Pro"
+author: "Tim Alpha Studio"
 date: "2026-01-15"
 readTime: "8 min read"
 image: "/images/blog/ai-image-generator.jpg"
@@ -43,7 +43,7 @@ minimalist style, 4K quality, commercial advertisement
 
 ### Step 2: Pilih Style yang Sesuai
 
-Affiliator Pro menyediakan berbagai style:
+Alpha Studio menyediakan berbagai style:
 - **Product Photography** - Untuk foto produk profesional
 - **Lifestyle** - Produk dalam konteks penggunaan
 - **Minimalist** - Background bersih dan simple
@@ -86,8 +86,8 @@ Jangan ragu untuk generate beberapa variasi. AI bisa menghasilkan hasil yang ber
 
 AI Image Generator adalah game-changer untuk affiliate marketer. Dengan investasi waktu belajar yang minimal, Anda bisa menghasilkan konten visual berkualitas profesional.
 
-Mulai eksplorasi fitur Image Generator di Affiliator Pro dan tingkatkan performa konten affiliate Anda hari ini!
+Mulai eksplorasi fitur Image Generator di Alpha Studio dan tingkatkan performa konten affiliate Anda hari ini!
 
 ---
 
-*Artikel ini ditulis oleh Tim Affiliator Pro. Untuk pertanyaan lebih lanjut, hubungi kami melalui halaman [Kontak](/contact).*
+*Artikel ini ditulis oleh Tim Alpha Studio. Untuk pertanyaan lebih lanjut, hubungi kami melalui halaman [Kontak](/contact).*
