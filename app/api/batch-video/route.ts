@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server'
+import { auth } from '@/lib/auth'
 import { getCaptchaToken } from '@/lib/chaptcha'
+import { checkSubscriptionStatus } from '@/lib/subscription'
 import { submitGoogleFlowVideo } from '@/lib/useapi/google-flow'
 
 const USEAPI_TOKEN = process.env.USEAPI_TOKEN || process.env.USEAPI_API_TOKEN
@@ -18,7 +20,30 @@ const VIDEO_PROMPTS = [
     "A cat playing with a butterfly in a sunlit meadow full of wildflowers, soft bokeh background",
 ]
 
+async function requireActiveSubscription() {
+    const session = await auth()
+
+    if (!session?.user?.id) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const access = await checkSubscriptionStatus(session.user.id)
+    if (!access.isActive) {
+        return NextResponse.json(
+            { error: 'Subscription tidak aktif. Silakan berlangganan untuk menggunakan fitur generate.' },
+            { status: 403 }
+        )
+    }
+
+    return null
+}
+
 export async function GET(request: Request) {
+    const guardResponse = await requireActiveSubscription()
+    if (guardResponse) {
+        return guardResponse
+    }
+
     if (!USEAPI_TOKEN) {
         return NextResponse.json({ error: 'USEAPI_TOKEN not configured' }, { status: 500 })
     }

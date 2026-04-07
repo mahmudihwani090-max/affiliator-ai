@@ -1,9 +1,10 @@
 "use client"
 
 import Image from "next/image"
-import { useRef, useState, type ReactNode } from "react"
+import Lottie from "lottie-react"
+import { useEffect, useRef, useState, type ReactNode } from "react"
 
-import { checkVideoJobStatus, extendVideo, generateReferenceToVideo } from "@/app/actions/generate-video"
+import { ApiRequestError, checkImageJobStatus, checkVideoJobStatus, extendVideo, generateImageToImage, generateImageToVideo } from "@/lib/client/generation-api"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
@@ -18,7 +19,7 @@ import {
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { toUserFacingGenerationError } from "@/lib/generation-errors"
-import { buildUgcAffiliatePrompt, type UgcAffiliateConfig } from "@/lib/ugc-affiliate"
+import { buildUgcAffiliateScenePrompt, buildUgcAffiliateVideoPrompt, type UgcAffiliateConfig } from "@/lib/ugc-affiliate"
 import {
     CircleDot,
     ChevronDown,
@@ -37,11 +38,20 @@ import { toast } from "sonner"
 
 type AspectRatio = "landscape" | "portrait"
 
+type GenerationProgressState = {
+    stage: "idle" | "preparing-scene" | "generating-scene" | "preparing-video" | "generating-video" | "completed"
+    label: string
+    description: string
+    percent: number
+}
+
 type GeneratedReviewVideo = {
     id: string
     prompt: string
+    scenePrompt: string
     draftPrompt: string
     videoUrl: string
+    sceneImageUrl: string
     aspectRatio: AspectRatio
     createdAt: Date
     mediaGenerationId?: string
@@ -221,6 +231,26 @@ function readFileAsDataUrl(file: File) {
     })
 }
 
+function logUgcAffiliateError(stage: string, error: unknown, extra?: Record<string, unknown>) {
+    if (error instanceof ApiRequestError) {
+        console.error("[UGC Affiliate] API request failed", {
+            stage,
+            endpoint: error.endpoint,
+            status: error.status,
+            payload: error.payload,
+            ...extra,
+        })
+        return
+    }
+
+    console.error("[UGC Affiliate] Operation failed", {
+        stage,
+        error,
+        ...(error instanceof Error ? { message: error.message, stack: error.stack } : {}),
+        ...extra,
+    })
+}
+
 export default function UgcAffiliatePage() {
     const [config, setConfig] = useState<UgcAffiliateConfig>(defaultConfig)
     const [productImage, setProductImage] = useState<string | null>(null)
@@ -228,11 +258,29 @@ export default function UgcAffiliatePage() {
     const [backgroundImage, setBackgroundImage] = useState<string | null>(null)
     const [generatedVideos, setGeneratedVideos] = useState<GeneratedReviewVideo[]>([])
     const [isGenerating, setIsGenerating] = useState(false)
+    const [catAnimation, setCatAnimation] = useState<object | null>(null)
+    const [generationProgress, setGenerationProgress] = useState<GenerationProgressState>({
+        stage: "idle",
+        label: "Siap generate",
+        description: "Isi brief dan upload 3 referensi untuk memulai pipeline image-to-video.",
+        percent: 0,
+    })
 
     const productInputRef = useRef<HTMLInputElement>(null)
     const modelInputRef = useRef<HTMLInputElement>(null)
     const backgroundInputRef = useRef<HTMLInputElement>(null)
     const messagesEndRef = useRef<HTMLDivElement>(null)
+
+    useEffect(() => {
+        fetch("/cat-loading.json")
+            .then((res) => res.json())
+            .then((data) => setCatAnimation(data))
+            .catch(() => {})
+    }, [])
+
+    const updateGenerationProgress = (next: GenerationProgressState) => {
+        setGenerationProgress(next)
+    }
 
     const updateConfig = <K extends keyof UgcAffiliateConfig>(key: K, value: UgcAffiliateConfig[K]) => {
         setConfig((current) => ({ ...current, [key]: value }))
@@ -270,8 +318,22 @@ export default function UgcAffiliatePage() {
         for (let attempt = 0; attempt < maxAttempts; attempt++) {
             await new Promise((resolve) => setTimeout(resolve, 5000))
 
+            const progressPercent = Math.min(99, 66 + Math.round(((attempt + 1) / maxAttempts) * 33))
+            updateGenerationProgress({
+                stage: "generating-video",
+                label: "Stage 2/2: Generating video",
+                description: "Scene image sedang dianimasikan menjadi video affiliate review.",
+                percent: progressPercent,
+            })
+
             const statusResult = await checkVideoJobStatus(jobId, "imageToVideo")
             if (statusResult.status === "completed" && statusResult.videoUrls?.length) {
+                updateGenerationProgress({
+                    stage: "completed",
+                    label: "Selesai",
+                    description: "Video affiliate berhasil dibuat.",
+                    percent: 100,
+                })
                 return {
                     videoUrl: statusResult.videoUrls[0],
                     mediaGenerationId: statusResult.mediaGenerationId,
@@ -279,11 +341,64 @@ export default function UgcAffiliatePage() {
             }
 
             if (statusResult.status === "failed") {
+                logUgcAffiliateError("pollVideo", new Error(statusResult.error || "Video job failed"), {
+                    jobId,
+                    attempt: attempt + 1,
+                    statusResult,
+                })
                 throw new Error(toUserFacingGenerationError(statusResult.error, "video"))
             }
         }
 
+        logUgcAffiliateError("pollVideoTimeout", new Error("Job timed out"), {
+            jobId,
+            maxAttempts,
+        })
         throw new Error(toUserFacingGenerationError("Job timed out", "video"))
+    }
+
+    const pollImage = async (jobId: string, maxAttempts = 90) => {
+        for (let attempt = 0; attempt < maxAttempts; attempt++) {
+            await new Promise((resolve) => setTimeout(resolve, 4000))
+
+            const progressPercent = Math.min(62, 14 + Math.round(((attempt + 1) / maxAttempts) * 48))
+            updateGenerationProgress({
+                stage: "generating-scene",
+                label: "Stage 1/2: Generating scene image",
+                description: "Produk, model, dan background sedang digabung menjadi satu scene yang siap dianimasikan.",
+                percent: progressPercent,
+            })
+
+            const statusResult = await checkImageJobStatus(jobId, "imageToImage")
+            const sceneImageUrl = statusResult.imageUrls?.[0] || statusResult.imageUrl
+            if (statusResult.status === "completed" && sceneImageUrl) {
+                updateGenerationProgress({
+                    stage: "preparing-video",
+                    label: "Stage 2/2: Preparing video",
+                    description: "Scene image berhasil dibuat. Menyiapkan start frame untuk video affiliate.",
+                    percent: 64,
+                })
+                return {
+                    sceneImageUrl,
+                    mediaGenerationId: typeof statusResult.mediaGenerationId === "string" ? statusResult.mediaGenerationId : undefined,
+                }
+            }
+
+            if (statusResult.status === "failed") {
+                logUgcAffiliateError("pollImage", new Error(statusResult.error || "Scene image job failed"), {
+                    jobId,
+                    attempt: attempt + 1,
+                    statusResult,
+                })
+                throw new Error(toUserFacingGenerationError(statusResult.error, "image"))
+            }
+        }
+
+        logUgcAffiliateError("pollImageTimeout", new Error("Scene image job timed out"), {
+            jobId,
+            maxAttempts,
+        })
+        throw new Error(toUserFacingGenerationError("Job timed out", "image"))
     }
 
     const updateGeneratedVideo = (videoId: string, updater: (video: GeneratedReviewVideo) => GeneratedReviewVideo) => {
@@ -291,29 +406,73 @@ export default function UgcAffiliatePage() {
     }
 
     const createGeneratedVideo = async (params: {
-        prompt: string
+        scenePrompt: string
+        videoPrompt: string
         aspectRatio: AspectRatio
         referenceImages: [string, string, string]
     }) => {
-        const result = await generateReferenceToVideo({
-            prompt: params.prompt,
+        updateGenerationProgress({
+            stage: "preparing-scene",
+            label: "Stage 1/2: Preparing scene",
+            description: "Mengirim 3 referensi untuk compose scene image affiliate yang rapi.",
+            percent: 8,
+        })
+
+        const sceneResult = await generateImageToImage({
+            prompt: params.scenePrompt,
             referenceImagesBase64: params.referenceImages,
+            aspectRatio: params.aspectRatio,
+        })
+
+        if (!sceneResult.success || !sceneResult.jobId) {
+            logUgcAffiliateError("createGeneratedScene", new Error(sceneResult.error || "Gagal memulai generate scene image"), {
+                result: sceneResult,
+                aspectRatio: params.aspectRatio,
+                promptPreview: params.scenePrompt.slice(0, 160),
+                referenceImageCount: params.referenceImages.length,
+            })
+            throw new Error(sceneResult.error || "Gagal memulai generate scene image")
+        }
+
+        const scene = await pollImage(sceneResult.jobId)
+        updateGenerationProgress({
+            stage: "preparing-video",
+            label: "Stage 2/2: Preparing video",
+            description: "Scene image sudah siap. Mengirim start frame untuk generate video review.",
+            percent: 68,
+        })
+        const videoResult = await generateImageToVideo({
+            prompt: params.videoPrompt,
+            startImageBase64: scene.sceneImageUrl,
             aspectRatio: params.aspectRatio,
             model: "veo-3.1-fast-relaxed",
         })
 
-        if (!result.success || !result.jobId) {
-            throw new Error(result.error || "Gagal memulai generate video")
+        if (!videoResult.success || !videoResult.jobId) {
+            logUgcAffiliateError("createGeneratedVideo", new Error(videoResult.error || "Gagal memulai generate video"), {
+                result: videoResult,
+                aspectRatio: params.aspectRatio,
+                promptPreview: params.videoPrompt.slice(0, 160),
+                sceneImageUrl: scene.sceneImageUrl.slice(0, 160),
+            })
+            throw new Error(videoResult.error || "Gagal memulai generate video")
         }
 
-        return pollVideo(result.jobId)
+        const video = await pollVideo(videoResult.jobId)
+
+        return {
+            ...video,
+            sceneImageUrl: scene.sceneImageUrl,
+        }
     }
 
     const prependGeneratedVideo = (params: {
         prompt: string
+        scenePrompt: string
         aspectRatio: AspectRatio
         referenceImages: [string, string, string]
         videoUrl: string
+        sceneImageUrl: string
         mediaGenerationId?: string
         sourceConfig: UgcAffiliateConfig
     }) => {
@@ -321,8 +480,10 @@ export default function UgcAffiliatePage() {
             {
                 id: Date.now().toString(),
                 prompt: params.prompt,
+                scenePrompt: params.scenePrompt,
                 draftPrompt: params.prompt,
                 videoUrl: params.videoUrl,
+                sceneImageUrl: params.sceneImageUrl,
                 aspectRatio: params.aspectRatio,
                 createdAt: new Date(),
                 mediaGenerationId: params.mediaGenerationId,
@@ -345,22 +506,29 @@ export default function UgcAffiliatePage() {
 
         try {
             const result = await createGeneratedVideo({
-                prompt: target.prompt,
+                scenePrompt: target.scenePrompt,
+                videoPrompt: target.prompt,
                 aspectRatio: target.aspectRatio,
                 referenceImages: target.referenceImages,
             })
 
             prependGeneratedVideo({
                 prompt: target.prompt,
+                scenePrompt: target.scenePrompt,
                 aspectRatio: target.aspectRatio,
                 referenceImages: target.referenceImages,
                 videoUrl: result.videoUrl,
+                sceneImageUrl: result.sceneImageUrl,
                 mediaGenerationId: result.mediaGenerationId,
                 sourceConfig: target.sourceConfig,
             })
 
             toast.success("Video berhasil diregenerate")
         } catch (error) {
+            logUgcAffiliateError("handleRegenerateVideo", error, {
+                videoId,
+                mediaGenerationId: target.mediaGenerationId,
+            })
             toast.error(toUserFacingGenerationError(error instanceof Error ? error.message : undefined, "video"))
         } finally {
             updateGeneratedVideo(videoId, (video) => ({ ...video, actionStatus: "idle" }))
@@ -382,23 +550,32 @@ export default function UgcAffiliatePage() {
         updateGeneratedVideo(videoId, (video) => ({ ...video, actionStatus: "duplicating" }))
 
         try {
+            const scenePrompt = buildUgcAffiliateScenePrompt(target.sourceConfig)
             const result = await createGeneratedVideo({
-                prompt,
+                scenePrompt,
+                videoPrompt: prompt,
                 aspectRatio: target.aspectRatio,
                 referenceImages: target.referenceImages,
             })
 
             prependGeneratedVideo({
                 prompt,
+                scenePrompt,
                 aspectRatio: target.aspectRatio,
                 referenceImages: target.referenceImages,
                 videoUrl: result.videoUrl,
+                sceneImageUrl: result.sceneImageUrl,
                 mediaGenerationId: result.mediaGenerationId,
                 sourceConfig: target.sourceConfig,
             })
 
             toast.success("Video duplikat dengan prompt baru berhasil dibuat")
         } catch (error) {
+            logUgcAffiliateError("handleDuplicateWithEditedPrompt", error, {
+                videoId,
+                mediaGenerationId: target.mediaGenerationId,
+                promptPreview: prompt.slice(0, 160),
+            })
             toast.error(toUserFacingGenerationError(error instanceof Error ? error.message : undefined, "video"))
         } finally {
             updateGeneratedVideo(videoId, (video) => ({ ...video, actionStatus: "idle" }))
@@ -423,6 +600,12 @@ export default function UgcAffiliatePage() {
             })
 
             if (!result.success || !result.jobId) {
+                logUgcAffiliateError("extendVideo", new Error(result.error || "Gagal memulai extend video"), {
+                    result,
+                    videoId,
+                    mediaGenerationId: target.mediaGenerationId,
+                    promptPreview: prompt.slice(0, 160),
+                })
                 throw new Error(result.error || "Gagal memulai extend video")
             }
 
@@ -430,15 +613,22 @@ export default function UgcAffiliatePage() {
 
             prependGeneratedVideo({
                 prompt,
+                scenePrompt: target.scenePrompt,
                 aspectRatio: target.aspectRatio,
                 referenceImages: target.referenceImages,
                 videoUrl: pollResult.videoUrl,
+                sceneImageUrl: target.sceneImageUrl,
                 mediaGenerationId: pollResult.mediaGenerationId,
                 sourceConfig: target.sourceConfig,
             })
 
             toast.success("Video berhasil diperpanjang")
         } catch (error) {
+            logUgcAffiliateError("handleExtendVideo", error, {
+                videoId,
+                mediaGenerationId: target.mediaGenerationId,
+                promptPreview: prompt.slice(0, 160),
+            })
             toast.error(toUserFacingGenerationError(error instanceof Error ? error.message : undefined, "video"))
         } finally {
             updateGeneratedVideo(videoId, (video) => ({ ...video, actionStatus: "idle" }))
@@ -477,7 +667,14 @@ export default function UgcAffiliatePage() {
         }
 
         setIsGenerating(true)
-        const prompt = buildUgcAffiliatePrompt(config)
+        updateGenerationProgress({
+            stage: "preparing-scene",
+            label: "Stage 1/2: Preparing scene",
+            description: "Memvalidasi brief dan menyiapkan pipeline UGC Affiliate.",
+            percent: 3,
+        })
+        const scenePrompt = buildUgcAffiliateScenePrompt(config)
+        const prompt = buildUgcAffiliateVideoPrompt(config)
         const referenceImages: [string, string, string] = [productImage, modelImage, backgroundImage]
         const sourceConfig = { ...config }
 
@@ -486,26 +683,45 @@ export default function UgcAffiliatePage() {
         }, 50)
 
         try {
+            toast.info("Menyusun scene image dari produk, model, dan background...")
             const result = await createGeneratedVideo({
-                prompt,
+                scenePrompt,
+                videoPrompt: prompt,
                 aspectRatio: config.aspectRatio,
                 referenceImages,
             })
 
             prependGeneratedVideo({
                 prompt,
+                scenePrompt,
                 aspectRatio: config.aspectRatio,
                 referenceImages,
                 videoUrl: result.videoUrl,
+                sceneImageUrl: result.sceneImageUrl,
                 mediaGenerationId: result.mediaGenerationId,
                 sourceConfig,
             })
 
             toast.success("UGC Affiliate video berhasil dibuat")
         } catch (error) {
+            logUgcAffiliateError("handleGenerateVideo", error, {
+                aspectRatio: config.aspectRatio,
+                productName: config.productName,
+                promptPreview: prompt.slice(0, 160),
+            })
             toast.error(toUserFacingGenerationError(error instanceof Error ? error.message : undefined, "video"))
         } finally {
             setIsGenerating(false)
+            setTimeout(() => {
+                setGenerationProgress((current) => current.stage === "completed"
+                    ? current
+                    : {
+                        stage: "idle",
+                        label: "Siap generate",
+                        description: "Isi brief dan upload 3 referensi untuk memulai pipeline image-to-video.",
+                        percent: 0,
+                    })
+            }, 400)
         }
     }
 
@@ -574,7 +790,7 @@ export default function UgcAffiliatePage() {
                             </div>
                             <h1 className="text-2xl font-black tracking-tight md:text-3xl">UGC Affiliate Product Review</h1>
                             <p className="mt-2 max-w-3xl text-sm text-zinc-500 dark:text-zinc-400">
-                                Upload 3 gambar seperti Auto Scene: produk, model, dan background. Sistem akan langsung generate video review product bergaya UGC affiliate.
+                                Upload 3 gambar seperti Auto Scene: produk, model, dan background. Sistem akan compose satu scene image dulu, lalu memakai scene itu sebagai start frame untuk generate video review affiliate.
                             </p>
                         </div>
                     </div>
@@ -678,7 +894,7 @@ export default function UgcAffiliatePage() {
                         <div>
                             <h3 className="text-base font-semibold text-foreground">Generate video review</h3>
                             <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
-                                Video akan digenerate langsung dari 3 gambar referensi dengan prompt review affiliate yang mengikuti brief user.
+                                Sistem akan membuat scene image yang rapi dulu dari 3 referensi, lalu scene tersebut dipakai sebagai start frame video.
                             </p>
                         </div>
                         <Button onClick={handleGenerateVideo} disabled={isGenerating} className="h-11 rounded-xl bg-emerald-500 px-5 text-sm font-semibold text-black hover:bg-emerald-400 md:min-w-56">
@@ -697,6 +913,50 @@ export default function UgcAffiliatePage() {
                     </div>
                 </Card>
 
+                {isGenerating ? (
+                    <Card className="rounded-[2rem] border-emerald-300/50 bg-emerald-50/70 py-0 text-foreground dark:border-emerald-500/20 dark:bg-emerald-500/10">
+                        <div className="grid gap-6 p-5 md:grid-cols-[180px,1fr] md:items-center md:p-6">
+                            <div className="flex items-center justify-center">
+                                {catAnimation ? (
+                                    <div className="w-full max-w-[160px]">
+                                        <Lottie animationData={catAnimation} loop />
+                                    </div>
+                                ) : (
+                                    <div className="flex h-28 w-28 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-300">
+                                        <Loader2 className="h-10 w-10 animate-spin" />
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="space-y-4">
+                                <div className="flex items-start justify-between gap-4">
+                                    <div>
+                                        <p className="text-xs font-semibold uppercase tracking-[0.12em] text-emerald-600 dark:text-emerald-300">Pipeline Progress</p>
+                                        <h3 className="mt-1 text-lg font-black text-foreground">{generationProgress.label}</h3>
+                                        <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-300">{generationProgress.description}</p>
+                                    </div>
+                                    <div className="rounded-full border border-emerald-400/30 bg-white px-3 py-1 text-sm font-semibold text-emerald-700 dark:bg-white/5 dark:text-emerald-200">
+                                        {generationProgress.percent}%
+                                    </div>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <div className="h-3 overflow-hidden rounded-full bg-emerald-200/60 dark:bg-white/10">
+                                        <div
+                                            className="h-full rounded-full bg-emerald-500 transition-[width] duration-500 ease-out"
+                                            style={{ width: `${generationProgress.percent}%` }}
+                                        />
+                                    </div>
+                                    <div className="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400">
+                                        <span>Compose scene image</span>
+                                        <span>Animate to review video</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </Card>
+                ) : null}
+
                 {generatedVideos.length === 0 ? (
                     <Card className="rounded-[2rem] border border-dashed border-gray-200 bg-gray-50 dark:border-white/10 dark:bg-[#101010] py-0">
                         <div className="flex flex-col items-center justify-center px-6 py-12 text-center">
@@ -705,7 +965,7 @@ export default function UgcAffiliatePage() {
                             </div>
                             <h2 className="text-xl font-bold text-foreground">Video hasil akan muncul di sini</h2>
                             <p className="mt-3 max-w-2xl text-sm text-zinc-500 dark:text-zinc-400">
-                                Setelah brief lengkap dan 3 media terisi, sistem akan generate UGC affiliate product review video sesuai intent user.
+                                Setelah brief lengkap dan 3 media terisi, sistem akan compose scene review dulu lalu mengubahnya menjadi video UGC affiliate.
                             </p>
                         </div>
                     </Card>
@@ -754,6 +1014,19 @@ export default function UgcAffiliatePage() {
                                                     onChange={(event) => updateGeneratedVideo(video.id, (current) => ({ ...current, draftPrompt: event.target.value }))}
                                                     className="min-h-[128px] rounded-2xl border-gray-300 bg-gray-50 dark:border-white/10 dark:bg-[#090909] px-4 py-3 text-sm text-foreground placeholder:text-zinc-400 dark:placeholder:text-zinc-500 focus-visible:border-emerald-400 focus-visible:ring-emerald-400/30"
                                                 />
+                                            </CollapsibleContent>
+                                        </Collapsible>
+                                        <Collapsible>
+                                            <CollapsibleTrigger asChild>
+                                                <Button variant="outline" className="w-full justify-between border-gray-200 bg-transparent text-foreground hover:bg-gray-100 dark:border-white/10 dark:hover:bg-white/5">
+                                                    <span>Lihat scene image</span>
+                                                    <ChevronDown className="h-4 w-4" />
+                                                </Button>
+                                            </CollapsibleTrigger>
+                                            <CollapsibleContent className="pt-2">
+                                                <div className="overflow-hidden rounded-2xl border border-gray-200 bg-gray-100 dark:border-white/10 dark:bg-[#090909]">
+                                                    <Image src={video.sceneImageUrl} alt="Generated UGC scene" width={1200} height={1200} unoptimized className={`w-full object-contain ${video.aspectRatio === "portrait" ? "aspect-[9/16]" : "aspect-video"}`} />
+                                                </div>
                                             </CollapsibleContent>
                                         </Collapsible>
                                         <p className="line-clamp-6 text-sm text-zinc-500 dark:text-zinc-400">{video.prompt}</p>

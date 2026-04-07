@@ -3,8 +3,7 @@
 import Image from "next/image"
 import { useRef, useState, type ReactNode } from "react"
 
-import { checkImageJobStatus, generateImageToImage } from "@/app/actions/generate-image"
-import { checkVideoJobStatus, generateImageToVideo } from "@/app/actions/generate-video"
+import { checkImageJobStatus, generateImageToImage, checkVideoJobStatus, generateImageToVideo } from "@/lib/client/generation-api"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"

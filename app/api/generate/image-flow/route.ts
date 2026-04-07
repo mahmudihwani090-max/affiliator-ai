@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@/lib/auth";
+import { checkSubscriptionStatus } from "@/lib/subscription";
 
 const GOOGLE_AI_SANDBOX_URL = "https://aisandbox-pa.googleapis.com/v1/projects";
 const PROJECT_ID = "4ac269d2-84a9-455a-9e65-6ee9628e4721";
@@ -14,8 +16,34 @@ function generateSeed(): number {
     return Math.floor(Math.random() * 1000000);
 }
 
+async function requireActiveSubscription() {
+    const session = await auth();
+
+    if (!session?.user?.id) {
+        return NextResponse.json(
+            { error: "Unauthorized" },
+            { status: 401 }
+        );
+    }
+
+    const access = await checkSubscriptionStatus(session.user.id);
+    if (!access.isActive) {
+        return NextResponse.json(
+            { error: "Subscription tidak aktif. Silakan berlangganan untuk menggunakan fitur generate." },
+            { status: 403 }
+        );
+    }
+
+    return null;
+}
+
 export async function POST(request: NextRequest) {
     try {
+        const guardResponse = await requireActiveSubscription();
+        if (guardResponse) {
+            return guardResponse;
+        }
+
         const body = await request.json();
         const {
             prompt,

@@ -25,9 +25,7 @@ import {
   Workflow,
 } from "lucide-react"
 import { toast } from "sonner"
-import { generateTextToImage, checkImageJobStatus } from "@/app/actions/generate-image"
-import { submitTextToVideo } from "@/app/actions/generate-video-captcha"
-import { checkVideoJobStatus } from "@/app/actions/generate-video"
+import { generateTextToImage, checkImageJobStatus, submitTextToVideo, checkVideoJobStatus } from "@/lib/client/generation-api"
 import { toUserFacingGenerationError } from "@/lib/generation-errors"
 import { getGenerationQueueNotice } from "@/lib/generation-queue-notice"
 

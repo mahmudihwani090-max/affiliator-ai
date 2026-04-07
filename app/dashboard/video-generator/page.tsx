@@ -21,8 +21,7 @@ import {
     Play,
     Shield,
 } from "lucide-react"
-import { submitTextToVideo } from "@/app/actions/generate-video-captcha"
-import { generateImageToVideo, generateReferenceToVideo, checkVideoJobStatus } from "@/app/actions/generate-video"
+import { submitTextToVideo, generateImageToVideo, generateReferenceToVideo, checkVideoJobStatus } from "@/lib/client/generation-api"
 import { toUserFacingGenerationError } from "@/lib/generation-errors"
 import { getGenerationQueueNotice } from "@/lib/generation-queue-notice"
 import { toast } from "sonner"

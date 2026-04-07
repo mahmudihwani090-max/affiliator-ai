@@ -25,8 +25,7 @@ import { useIsMobile } from "@/hooks/use-mobile"
 import Lottie from "lottie-react"
 
 import { getProject, addProjectAsset, deleteProjectAsset } from "@/app/actions/project"
-import { generateTextToImage, generateImageToImage, checkImageJobStatus, upscaleImage } from "@/app/actions/generate-image"
-import { generateTextToVideo, generateImageToVideo, generateFrameToFrameVideo, generateReferenceToVideo, checkVideoJobStatus, upscaleVideo, extendVideo } from "@/app/actions/generate-video"
+import { generateTextToImage, generateImageToImage, checkImageJobStatus, upscaleImage, generateTextToVideo, generateImageToVideo, generateFrameToFrameVideo, generateReferenceToVideo, checkVideoJobStatus, upscaleVideo, extendVideo } from "@/lib/client/generation-api"
 
 type AspectRatio = "landscape" | "portrait"
 type VideoMode = "text" | "frames" | "reference"

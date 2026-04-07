@@ -1,14 +1,31 @@
 import { NextRequest, NextResponse } from "next/server"
 import { checkImageJobStatus } from "@/app/actions/generate-image"
 import { checkVideoJobStatus } from "@/app/actions/generate-video"
-import { validateApiRequest, unauthorizedResponse } from "@/lib/api-auth"
+import { validateApiOrSessionRequest, unauthorizedResponse } from "@/lib/api-auth"
 import { type CreditOperationType } from "@/lib/credit-packages"
+
+const VIDEO_OPERATIONS = new Set([
+    "textToVideo",
+    "imageToVideo",
+    "upscaleVideo",
+    "upscaleVideo4K",
+    "extendVideo",
+    "referenceToVideo",
+    "frameToFrame",
+])
+
+const IMAGE_OPERATIONS = new Set([
+    "textToImage",
+    "imageToImage",
+    "upscaleImage",
+])
 
 // CORS headers for production
 const corsHeaders = {
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization, X-API-Version",
+    "X-API-Version": "1",
 }
 
 // Handle OPTIONS preflight request
@@ -22,16 +39,16 @@ export async function GET(
 ) {
     try {
         // Validate Bearer token
-        const authResult = await validateApiRequest(request)
+        const authResult = await validateApiOrSessionRequest(request)
         if (!authResult.authenticated) {
             return unauthorizedResponse(authResult.error || "Unauthorized")
         }
 
         const { jobId } = await params
 
-        // Get operation type from query params for credit deduction
+        // Get operation type from query params for status routing and credit context.
         const { searchParams } = new URL(request.url)
-        const operation = searchParams.get("operation") as CreditOperationType | null
+        const operation = searchParams.get("operation")
 
         if (!jobId) {
             return NextResponse.json(
@@ -40,19 +57,21 @@ export async function GET(
             )
         }
 
-        // Determine job type from jobId format
-        // Video jobs contain 'v-' after the timestamp
-        const isVideoJob = jobId.includes("v-")
+        const isVideoOperation = operation ? VIDEO_OPERATIONS.has(operation) : false
+        const isImageOperation = operation ? IMAGE_OPERATIONS.has(operation) : false
+
+        // Fallback for legacy callers that do not pass an operation.
+        const isVideoJob = isVideoOperation || (!isImageOperation && jobId.includes("v-"))
 
         let result
 
         if (isVideoJob) {
-            result = await checkVideoJobStatus(jobId, operation || undefined, authResult.userId)
+            result = await checkVideoJobStatus(jobId, operation as CreditOperationType | undefined, authResult.userId)
         } else {
-            result = await checkImageJobStatus(jobId, operation || undefined, authResult.userId)
+            result = await checkImageJobStatus(jobId, operation as CreditOperationType | undefined, authResult.userId)
         }
 
-        return NextResponse.json(result)
+        return NextResponse.json(result, { headers: corsHeaders })
     } catch (error) {
         console.error("Job status API error:", error)
         return NextResponse.json(

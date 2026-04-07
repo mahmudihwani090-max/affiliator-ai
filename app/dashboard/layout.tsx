@@ -2,8 +2,10 @@ import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/s
 import { AppSidebar } from "@/components/app-sidebar"
 import { ModeToggle } from "@/components/mode-toggle"
 import { GenerationQueueHeaderNotice } from "@/components/generation-queue-header-notice"
+import { VersionRefreshNotice } from "@/components/version-refresh-notice"
 import { Toaster } from "sonner"
 import { auth } from "@/lib/auth"
+import { getAppVersion } from "@/lib/app-version"
 import { prisma } from "@/lib/prisma"
 import { getGenerationQueueSummaryByUserId } from "@/lib/useapi/google-flow-generation-queue"
 import { Separator } from "@/components/ui/separator"
@@ -47,6 +49,7 @@ export default async function DashboardLayout({
         limit: 10,
         items: [],
       }
+  const initialVersion = getAppVersion()
 
   return (
     <SidebarProvider>
@@ -79,6 +82,7 @@ export default async function DashboardLayout({
           </div>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+          <VersionRefreshNotice initialVersion={initialVersion} />
           {children}
         </div>
       </SidebarInset>

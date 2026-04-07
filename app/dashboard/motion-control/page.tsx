@@ -29,7 +29,7 @@ import {
 import {
     submitMotionControl,
     checkMotionControlStatus,
-} from "@/app/actions/motion-control"
+} from "@/lib/client/motion-control-api"
 import { toast } from "sonner"
 
 type CharacterOrientation = "video" | "image"

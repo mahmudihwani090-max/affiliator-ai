@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from "next/server"
 import { upscaleImage } from "@/app/actions/generate-image"
-import { validateApiRequest, unauthorizedResponse } from "@/lib/api-auth"
+import { validateApiOrSessionRequest, unauthorizedResponse } from "@/lib/api-auth"
 
 // CORS headers for production
 const corsHeaders = {
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization, X-API-Version",
+    "X-API-Version": "1",
 }
 
 // Handle OPTIONS preflight request
@@ -36,7 +37,7 @@ export async function OPTIONS() {
 export async function POST(request: NextRequest) {
     try {
         // Validate Bearer token
-        const authResult = await validateApiRequest(request)
+        const authResult = await validateApiOrSessionRequest(request)
         if (!authResult.authenticated) {
             return unauthorizedResponse(authResult.error || "Unauthorized")
         }

@@ -1,6 +1,7 @@
 "use server"
 
 import { auth } from "@/lib/auth"
+import { checkSubscriptionStatus } from "@/lib/subscription"
 
 interface MotionControlRequest {
   imageUrl: string
@@ -23,6 +24,29 @@ interface MotionControlStatusResponse {
   status?: string
   videoUrl?: string
   error?: string
+}
+
+async function requireAuthorizedSubscribedUser() {
+  const session = await auth()
+  if (!session?.user?.id) {
+    return {
+      success: false as const,
+      error: "Unauthorized",
+    }
+  }
+
+  const access = await checkSubscriptionStatus(session.user.id)
+  if (!access.isActive) {
+    return {
+      success: false as const,
+      error: "Subscription tidak aktif. Silakan berlangganan untuk menggunakan fitur generate.",
+    }
+  }
+
+  return {
+    success: true as const,
+    userId: session.user.id,
+  }
 }
 
 function extractTaskId(payload: unknown): string | undefined {
@@ -104,9 +128,9 @@ function extractGeneratedVideoUrl(payload: unknown): string | undefined {
 export async function submitMotionControl(
   request: MotionControlRequest
 ): Promise<MotionControlTaskResponse> {
-  const session = await auth()
-  if (!session?.user?.id) {
-    return { success: false, error: "Unauthorized" }
+  const actor = await requireAuthorizedSubscribedUser()
+  if (!actor.success) {
+    return { success: false, error: actor.error }
   }
 
   if (!request.apiKey || request.apiKey.trim().length === 0) {
@@ -183,9 +207,9 @@ export async function checkMotionControlStatus(
   taskId: string,
   apiKey: string
 ): Promise<MotionControlStatusResponse> {
-  const session = await auth()
-  if (!session?.user?.id) {
-    return { success: false, error: "Unauthorized" }
+  const actor = await requireAuthorizedSubscribedUser()
+  if (!actor.success) {
+    return { success: false, error: actor.error }
   }
 
   if (!apiKey || apiKey.trim().length === 0) {

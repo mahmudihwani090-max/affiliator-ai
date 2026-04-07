@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from "next/server"
 import { generateTextToImage, generateImageToImage } from "@/app/actions/generate-image"
-import { validateApiRequest, unauthorizedResponse } from "@/lib/api-auth"
+import { validateApiOrSessionRequest, unauthorizedResponse } from "@/lib/api-auth"
 
 // CORS headers for production
 const corsHeaders = {
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization, X-API-Version",
+    "X-API-Version": "1",
 }
 
 // Handle OPTIONS preflight request
@@ -30,7 +31,7 @@ function isFormData(request: NextRequest): boolean {
 export async function POST(request: NextRequest) {
     try {
         // Validate Bearer token
-        const authResult = await validateApiRequest(request)
+        const authResult = await validateApiOrSessionRequest(request)
         if (!authResult.authenticated) {
             return unauthorizedResponse(authResult.error || "Unauthorized")
         }
@@ -93,7 +94,7 @@ export async function POST(request: NextRequest) {
             )
         }
 
-        return NextResponse.json(result)
+        return NextResponse.json(result, { headers: corsHeaders })
     } catch (error) {
         console.error("Image generation API error:", error)
         return NextResponse.json(

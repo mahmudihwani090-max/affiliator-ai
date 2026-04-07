@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
+import { auth } from "@/lib/auth"
 import { prisma } from "./prisma"
 
 export interface AuthResult {
@@ -62,6 +63,23 @@ export async function validateApiRequest(request: NextRequest): Promise<AuthResu
             error: "Authentication failed",
         }
     }
+}
+
+export async function validateApiOrSessionRequest(request: NextRequest): Promise<AuthResult> {
+    const apiResult = await validateApiRequest(request)
+    if (apiResult.authenticated) {
+        return apiResult
+    }
+
+    const session = await auth()
+    if (session?.user?.id) {
+        return {
+            authenticated: true,
+            userId: session.user.id,
+        }
+    }
+
+    return apiResult
 }
 
 /**

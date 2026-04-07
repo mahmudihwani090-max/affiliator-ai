@@ -97,3 +97,51 @@ export function buildUgcAffiliatePrompt(config: UgcAffiliateConfig) {
     "No text overlay, no subtitles burned into the image, no watermark, no split-screen, no extra duplicate people.",
   ].join(" ")
 }
+
+export function buildUgcAffiliateScenePrompt(config: UgcAffiliateConfig) {
+  const productCategory = config.productCategory.trim()
+  const productName = config.productName.trim() || "the product"
+  const targetAudience = config.targetAudience.trim()
+  const keySellingPoints = config.keySellingPoints.trim()
+  const reviewAngle = config.reviewAngle.trim()
+  const creatorPersona = config.creatorPersona.trim()
+
+  return [
+    `Create a polished photorealistic UGC affiliate hero scene for ${productName}, a ${productCategory} product for ${targetAudience}.`,
+    `Use the uploaded product image as the exact product identity, the uploaded model image as the exact creator identity, and the uploaded background image as the exact environment anchor.`,
+    `The creator should be in a believable ready-to-review pose, naturally presenting or holding ${productName} to camera like an affiliate reviewer about to speak.`,
+    `The pose, facial expression, framing, and hand placement must clearly support this review angle: ${reviewAngle}.`,
+    `Visually emphasize these selling points through styling, product placement, and presentation energy: ${keySellingPoints}.`,
+    `The creator persona should feel like ${creatorPersona}.`,
+    getPresetStyleDirection(config.presetStyle),
+    getToneDirection(config.tone),
+    getAspectRatioDirection(config.aspectRatio),
+    "Blend the model, product, and background into one cohesive, premium-looking composition with realistic lighting and shadows.",
+    "Keep the product packaging, logo placement, color, and material highly consistent with the uploaded product reference.",
+    "Keep the creator face, skin tone, hairstyle, and identity consistent with the uploaded model reference.",
+    "Use the uploaded background as the actual environment, not just inspiration.",
+    "The final image should look like a strong start frame for a commercial UGC review video.",
+    "No text overlay, no subtitles, no watermark, no extra hands, no duplicate people, no distorted product.",
+  ].join(" ")
+}
+
+export function buildUgcAffiliateVideoPrompt(config: UgcAffiliateConfig) {
+  const productName = config.productName.trim() || "the product"
+  const keySellingPoints = config.keySellingPoints.trim()
+  const reviewAngle = config.reviewAngle.trim()
+  const creatorPersona = config.creatorPersona.trim()
+
+  return [
+    `Animate this prepared UGC affiliate review start frame into a realistic product review video for ${productName}.`,
+    `The creator persona should feel like ${creatorPersona}.`,
+    `The performance should stay aligned with this review angle: ${reviewAngle}.`,
+    `The creator should make natural review motions such as subtle face movement, eye contact to camera, product presentation gestures, light hand motion, and believable posture shifts.`,
+    `Keep the product clearly visible and preserve its packaging and identity throughout the motion.`,
+    `The visual storytelling should reinforce these selling points: ${keySellingPoints}.`,
+    getPresetStyleDirection(config.presetStyle),
+    getToneDirection(config.tone),
+    getCallToActionDirection(config.callToAction),
+    "Keep motion realistic, stable, and creator-led. Avoid heavy camera movement, body distortion, product morphing, or scene changes.",
+    "No text overlay, no subtitles, no extra people, no duplicate limbs, no surreal motion.",
+  ].join(" ")
+}

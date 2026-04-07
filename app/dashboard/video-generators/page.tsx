@@ -28,7 +28,7 @@ import {
     Video,
     Zap
 } from "lucide-react"
-import { generateTextToVideo, generateImageToVideo, generateReferenceToVideo, checkVideoJobStatus, upscaleVideo } from "@/app/actions/generate-video"
+import { generateTextToVideo, generateImageToVideo, generateReferenceToVideo, checkVideoJobStatus, upscaleVideo } from "@/lib/client/generation-api"
 import { toUserFacingGenerationError } from "@/lib/generation-errors"
 import { getGenerationQueueNotice } from "@/lib/generation-queue-notice"
 import { toast } from "sonner"

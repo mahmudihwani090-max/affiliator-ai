@@ -24,7 +24,7 @@ import {
     Eye,
     RefreshCw,
 } from "lucide-react"
-import { generateTextToImage, generateImageToImage, checkImageJobStatus, upscaleImage } from "@/app/actions/generate-image"
+import { generateTextToImage, generateImageToImage, checkImageJobStatus, upscaleImage } from "@/lib/client/generation-api"
 import { toUserFacingGenerationError } from "@/lib/generation-errors"
 import { getGenerationQueueNotice } from "@/lib/generation-queue-notice"
 import { toast } from "sonner"

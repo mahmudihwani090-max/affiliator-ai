@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from "next/server"
 import { generateTextToVideo, generateImageToVideo, generateFrameToFrameVideo, generateReferenceToVideo } from "@/app/actions/generate-video"
-import { validateApiRequest, unauthorizedResponse } from "@/lib/api-auth"
+import { validateApiOrSessionRequest, unauthorizedResponse } from "@/lib/api-auth"
 
 // CORS headers for production
 const corsHeaders = {
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization, X-API-Version",
+    "X-API-Version": "1",
 }
 
 // Handle OPTIONS preflight request
@@ -30,7 +31,7 @@ function isFormData(request: NextRequest): boolean {
 export async function POST(request: NextRequest) {
     try {
         // Validate Bearer token
-        const authResult = await validateApiRequest(request)
+        const authResult = await validateApiOrSessionRequest(request)
         if (!authResult.authenticated) {
             return unauthorizedResponse(authResult.error || "Unauthorized")
         }
@@ -120,13 +121,22 @@ export async function POST(request: NextRequest) {
         }
 
         if (!result.success) {
+            console.error("Video generation API rejected request", {
+                userId: authResult.userId,
+                promptPreview: prompt.slice(0, 160),
+                aspectRatio,
+                hasStartImage: Boolean(startImageBase64),
+                hasEndImage: Boolean(endImageBase64),
+                referenceImageCount: referenceImagesBase64.length,
+                error: result.error,
+            })
             return NextResponse.json(
                 { success: false, error: result.error },
                 { status: 400 }
             )
         }
 
-        return NextResponse.json(result)
+        return NextResponse.json(result, { headers: corsHeaders })
     } catch (error) {
         console.error("Video generation API error:", error)
         return NextResponse.json(
