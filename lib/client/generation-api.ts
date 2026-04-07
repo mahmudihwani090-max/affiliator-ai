@@ -1,5 +1,7 @@
 "use client"
 
+import type { GoogleFlowJobStatus } from "@/lib/useapi/google-flow"
+
 type AspectRatio = "landscape" | "portrait"
 type VideoResolution = "1080p" | "4K"
 type ImageResolution = "2k" | "4k"
@@ -18,6 +20,24 @@ type ApiResult = {
   success?: boolean
   error?: string
 } & JsonRecord
+
+type ImageGenerationResult = ApiResult & {
+  imageUrl?: string
+  imageUrls?: string[]
+  jobId?: string
+  mediaGenerationId?: string
+  queuePosition?: number
+  status?: GoogleFlowJobStatus
+}
+
+type VideoGenerationResult = ApiResult & {
+  jobId?: string
+  mediaGenerationId?: string
+  queuePosition?: number
+  status?: GoogleFlowJobStatus
+  videoUrl?: string
+  videoUrls?: string[]
+}
 
 export class ApiRequestError extends Error {
   endpoint: string
@@ -63,7 +83,7 @@ export function generateTextToImage(request: {
   prompt: string
   aspectRatio: AspectRatio
 }) {
-  return withErrorFallback(requestJson<ApiResult>("/api/generate/image", {
+  return withErrorFallback(requestJson<ImageGenerationResult>("/api/generate/image", {
     method: "POST",
     body: JSON.stringify(request),
   }))
@@ -74,7 +94,7 @@ export function generateImageToImage(request: {
   referenceImagesBase64: string[]
   aspectRatio: AspectRatio
 }) {
-  return withErrorFallback(requestJson<ApiResult>("/api/generate/image", {
+  return withErrorFallback(requestJson<ImageGenerationResult>("/api/generate/image", {
     method: "POST",
     body: JSON.stringify({
       prompt: request.prompt,
@@ -90,7 +110,7 @@ export function checkImageJobStatus(
 ) {
   const query = operation ? `?operation=${encodeURIComponent(operation)}` : ""
 
-  return withErrorFallback(requestJson<ApiResult>(`/api/jobs/${encodeURIComponent(jobId)}${query}`, {
+  return withErrorFallback(requestJson<ImageGenerationResult>(`/api/jobs/${encodeURIComponent(jobId)}${query}`, {
     method: "GET",
     headers: {
       "X-API-Version": "1",
@@ -102,7 +122,7 @@ export function upscaleImage(request: {
   mediaGenerationId: string
   resolution?: ImageResolution
 }) {
-  return withErrorFallback(requestJson<ApiResult>("/api/upscale/image", {
+  return withErrorFallback(requestJson<ImageGenerationResult>("/api/upscale/image", {
     method: "POST",
     body: JSON.stringify(request),
   }))
@@ -115,7 +135,7 @@ export function generateTextToVideo(request: {
   count?: number
   seed?: number
 }) {
-  return withErrorFallback(requestJson<ApiResult>("/api/generate/video", {
+  return withErrorFallback(requestJson<VideoGenerationResult>("/api/generate/video", {
     method: "POST",
     body: JSON.stringify(request),
   }))
@@ -128,7 +148,7 @@ export function submitTextToVideo(request: {
   count?: number
   seed?: number
 }) {
-  return withErrorFallback(requestJson<ApiResult>("/api/generate/video", {
+  return withErrorFallback(requestJson<VideoGenerationResult>("/api/generate/video", {
     method: "POST",
     body: JSON.stringify({
       prompt: request.prompt,
@@ -153,7 +173,7 @@ export function generateImageToVideo(request: {
   aspectRatio: AspectRatio
   model?: string
 }) {
-  return withErrorFallback(requestJson<ApiResult>("/api/generate/video", {
+  return withErrorFallback(requestJson<VideoGenerationResult>("/api/generate/video", {
     method: "POST",
     body: JSON.stringify({
       prompt: request.prompt,
@@ -171,7 +191,7 @@ export function generateFrameToFrameVideo(request: {
   aspectRatio: AspectRatio
   model?: string
 }) {
-  return withErrorFallback(requestJson<ApiResult>("/api/generate/video", {
+  return withErrorFallback(requestJson<VideoGenerationResult>("/api/generate/video", {
     method: "POST",
     body: JSON.stringify({
       prompt: request.prompt,
@@ -189,7 +209,7 @@ export function generateReferenceToVideo(request: {
   aspectRatio: AspectRatio
   model?: string
 }) {
-  return withErrorFallback(requestJson<ApiResult>("/api/generate/video", {
+  return withErrorFallback(requestJson<VideoGenerationResult>("/api/generate/video", {
     method: "POST",
     body: JSON.stringify({
       prompt: request.prompt,
@@ -206,7 +226,7 @@ export function checkVideoJobStatus(
 ) {
   const query = operation ? `?operation=${encodeURIComponent(operation)}` : ""
 
-  return withErrorFallback(requestJson<ApiResult>(`/api/jobs/${encodeURIComponent(jobId)}${query}`, {
+  return withErrorFallback(requestJson<VideoGenerationResult>(`/api/jobs/${encodeURIComponent(jobId)}${query}`, {
     method: "GET",
     headers: {
       "X-API-Version": "1",
@@ -218,7 +238,7 @@ export function upscaleVideo(request: {
   mediaGenerationId: string
   resolution?: VideoResolution
 }) {
-  return withErrorFallback(requestJson<ApiResult>("/api/upscale/video", {
+  return withErrorFallback(requestJson<VideoGenerationResult>("/api/upscale/video", {
     method: "POST",
     body: JSON.stringify(request),
   }))
@@ -228,7 +248,7 @@ export function extendVideo(request: {
   mediaGenerationId: string
   prompt: string
 }) {
-  return withErrorFallback(requestJson<ApiResult>("/api/generate/video/extend", {
+  return withErrorFallback(requestJson<VideoGenerationResult>("/api/generate/video/extend", {
     method: "POST",
     body: JSON.stringify(request),
   }))
