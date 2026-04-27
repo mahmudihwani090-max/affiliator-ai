@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Users, CreditCard, Coins, Clock, DollarSign, Trash2, AlertTriangle, Loader2, CheckCircle2, XCircle } from "lucide-react"
 import { getDashboardStats, getRecentTransactions, deleteExpiredAssets, getExpiredAssetsCount, type DashboardStats, type AdminTransaction } from "@/app/actions/admin"
-import { formatPrice } from "@/lib/credit-packages"
+import { formatPrice } from "@/lib/subscription"
 
 function formatDate(date: Date) {
     return new Intl.DateTimeFormat("id-ID", {

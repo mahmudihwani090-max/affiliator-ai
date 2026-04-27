@@ -17,7 +17,7 @@ import { toast } from "sonner"
 import {
     getCreditHistoryAdmin,
 } from "@/app/actions/admin"
-import { formatPrice } from "@/lib/credit-packages"
+import { formatPrice } from "@/lib/subscription"
 
 function formatDate(date: Date) {
     return new Intl.DateTimeFormat("id-ID", {

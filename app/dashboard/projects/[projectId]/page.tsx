@@ -432,13 +432,13 @@ export default function ProjectDetailPage() {
     }
   }
 
-  const startPollingUpscale = (jobId: string, resolution: string, creditOp: "upscaleVideo" | "upscaleVideo4K", pr?: string, ratio?: string) => {
+  const startPollingUpscale = (jobId: string, resolution: string, accessOp: "upscaleVideo" | "upscaleVideo4K", pr?: string, ratio?: string) => {
     setPollingJobId(jobId)
     setProcessingLabel(`Upscaling video ke ${resolution}`)
     pollingCompletedRef.current = false
     pollingRef.current = setInterval(async () => {
       if (pollingCompletedRef.current) return
-      const s = await checkVideoJobStatus(jobId, creditOp)
+      const s = await checkVideoJobStatus(jobId, accessOp)
       if (pollingCompletedRef.current) return
       if (s.status === "completed" && s.videoUrls?.[0]) {
         pollingCompletedRef.current = true
@@ -1312,7 +1312,7 @@ export default function ProjectDetailPage() {
 
             {/* Subscription info */}
             <div className="px-4 pb-2 text-[11px] text-muted-foreground">
-              Subscription aktif diperlukan untuk generate. Tidak ada pemotongan kredit per request.
+              Subscription aktif diperlukan untuk generate.
             </div>
           </CollapsibleContent>
         </Collapsible>
@@ -1505,7 +1505,7 @@ export default function ProjectDetailPage() {
                       toast.error("Video ini tidak bisa di-upscale karena tidak memiliki mediaGenerationId.")
                       return
                     }
-                    const creditOp = res === "4K" ? "upscaleVideo4K" as const : "upscaleVideo" as const
+                    const accessOp = res === "4K" ? "upscaleVideo4K" as const : "upscaleVideo" as const
                     const assetPrompt = previewAsset.prompt || undefined
                     const assetRatio = previewAsset.aspectRatio || undefined
                     const mediaGenId = previewAsset.mediaGenerationId
@@ -1520,7 +1520,7 @@ export default function ProjectDetailPage() {
                       return
                     }
                     if (result.jobId) {
-                      startPollingUpscale(result.jobId, res, creditOp, assetPrompt, assetRatio)
+                      startPollingUpscale(result.jobId, res, accessOp, assetPrompt, assetRatio)
                     } else if (result.videoUrl) {
                       setIsGenerating(false)
                       await saveAssetRaw("upscaled", `Upscaled ${res}`, result.videoUrl, assetPrompt, assetRatio)

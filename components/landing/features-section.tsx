@@ -75,7 +75,7 @@ const features: Feature[] = [
   {
     icon: Coins,
     title: "Subscription Access",
-    description: "Pilih paket subscription untuk membuka semua AI tools tanpa potong kredit per request selama masa aktif.",
+    description: "Pilih paket subscription untuk membuka semua AI tools tanpa batas selama masa aktif.",
     color: "green"
   }
 ];

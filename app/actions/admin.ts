@@ -670,7 +670,8 @@ export async function updateTransactionStatus(
 }
 
 /**
- * Credit adjustments are disabled because access is subscription-based.
+ * Credit adjustments are removed — access is fully subscription-based.
+ * This stub is kept for backward compatibility with admin UI.
  */
 export async function adjustUserCredits(
     _userId: string,
@@ -683,12 +684,12 @@ export async function adjustUserCredits(
 }> {
     return {
         success: false,
-        error: "Sistem kredit sudah dinonaktifkan. Kelola akses lewat subscription plan.",
+        error: "Kelola akses lewat subscription plan.",
     }
 }
 
 /**
- * Legacy admin history endpoint now returns subscription transaction history.
+ * Admin endpoint returning subscription transaction history.
  */
 export async function getCreditHistoryAdmin(
     page: number = 1,
@@ -761,7 +762,7 @@ export async function getCreditHistoryAdmin(
             total,
         }
     } catch (error) {
-        console.error("Error getting credit history:", error)
+        console.error("Error getting subscription history:", error)
         return {
             success: false,
             error: error instanceof Error ? error.message : "Unknown error",

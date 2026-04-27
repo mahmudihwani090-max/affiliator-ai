@@ -5,7 +5,7 @@ import Image from "next/image"
 
 import { NavMain } from "@/components/nav-main"
 import { NavUser } from "@/components/nav-user"
-import { CreditDisplay } from "@/components/credit-display"
+import { SubscriptionDisplay } from "@/components/subscription-display"
 import {
   Sidebar,
   SidebarContent,
@@ -18,7 +18,7 @@ import {
   LayoutDashboard,
   ImageIcon,
   Video,
-  Coins,
+  Crown,
   Shield,
   FolderOpen,
 } from "lucide-react"
@@ -88,7 +88,7 @@ const baseNavItems = [
   {
     title: "Subscription",
     url: "/dashboard/credits",
-    icon: Coins,
+    icon: Crown,
   },
   // {
   //   title: "API Docs",
@@ -156,7 +156,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
       <SidebarFooter>
         {mounted ? (
           <>
-            <CreditDisplay compact className="mb-2" />
+            <SubscriptionDisplay compact className="mb-2" />
             <NavUser user={user || { name: "User", email: "user@example.com", image: null }} />
           </>
         ) : (

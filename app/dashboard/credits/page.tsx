@@ -18,9 +18,9 @@ import {
     Infinity,
     Shield,
 } from "lucide-react"
-import { CreditDisplay } from "@/components/credit-display"
-import { formatPrice } from "@/lib/credit-packages"
-import { getSubscriptionHistory, getSubscriptionPlans } from "@/app/actions/credit"
+import { SubscriptionDisplay } from "@/components/subscription-display"
+import { formatPrice } from "@/lib/subscription"
+import { getSubscriptionHistory, getSubscriptionPlans } from "@/app/actions/subscription"
 import { toast } from "sonner"
 import { useSearchParams } from "next/navigation"
 
@@ -171,11 +171,11 @@ export default function CreditsPage() {
             <div className="flex flex-col gap-4">
                 <h1 className="text-3xl font-bold">Subscription</h1>
                 <p className="text-muted-foreground">
-                    Pilih paket langganan untuk membuka semua fitur AI generator tanpa sistem kredit
+                    Pilih paket langganan untuk membuka semua fitur AI generator
                 </p>
             </div>
 
-            <CreditDisplay showBuyButton={false} />
+            <SubscriptionDisplay showBuyButton={false} />
 
             <Tabs defaultValue="packages" className="w-full">
                 <TabsList className="grid w-full grid-cols-3 lg:w-[420px]">
@@ -233,7 +233,7 @@ export default function CreditsPage() {
                                                 </div>
                                                 <div className="flex items-center gap-2">
                                                     <Check className="w-4 h-4 text-green-500" />
-                                                    <span>Generate tanpa potong kredit per request</span>
+                                                    <span>Generate tanpa batas per request</span>
                                                 </div>
                                                 {plan.availabilityNote ? (
                                                     <div className="flex items-center gap-2">
@@ -270,7 +270,7 @@ export default function CreditsPage() {
                         <CardHeader>
                             <CardTitle>Semua Fitur Termasuk</CardTitle>
                             <CardDescription>
-                                Begitu subscription aktif, semua operasi AI di bawah ini bisa dipakai tanpa pemotongan kredit per request
+                                Begitu subscription aktif, semua operasi AI di bawah ini bisa dipakai tanpa batas
                             </CardDescription>
                         </CardHeader>
                         <CardContent>

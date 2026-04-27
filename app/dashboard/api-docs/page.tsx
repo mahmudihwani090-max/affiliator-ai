@@ -437,7 +437,7 @@ console.log(data.imageUrl);`}
                         <div className="flex items-center gap-2 mb-4">
                             <Zap className="h-4 w-4 text-muted-foreground" />
                             <span className="text-sm text-muted-foreground">
-                                Costs 0.1 credit per upscale
+                                Included with active subscription
                             </span>
                         </div>
 
@@ -455,8 +455,7 @@ console.log(data.imageUrl);`}
                             language="json"
                             code={`{
   "success": true,
-  "imageUrl": "data:image/jpeg;base64,...",  // Base64 data URL
-  "remainingCredits": 99.9
+  "imageUrl": "data:image/jpeg;base64,..."  // Base64 data URL
 }`}
                         />
 
@@ -779,7 +778,7 @@ const { jobId } = await response.json();
                         <div className="flex items-center gap-2 mb-4">
                             <Zap className="h-4 w-4 text-muted-foreground" />
                             <span className="text-sm text-muted-foreground">
-                                Costs 0.5 credit per upscale
+                                Included with active subscription
                             </span>
                         </div>
 

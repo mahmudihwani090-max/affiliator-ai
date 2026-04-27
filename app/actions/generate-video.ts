@@ -15,10 +15,10 @@ import { extractNestedErrorMessage, toUserFacingGenerationError } from "@/lib/ge
 import { logGenerationFailure } from "@/lib/generation-logger"
 
 import {
-  checkGenerationAccess as checkSufficientCredits,
-  checkGenerationAccessByUserId as checkSufficientCreditsByUserId,
+  checkGenerationAccess as checkAccess,
+  checkGenerationAccessByUserId as checkAccessByUserId,
   getSubscriptionAccessErrorMessage,
-  type GenerationAccessOperation as CreditOperationType,
+  type GenerationAccessOperation as AccessOperationType,
 } from "./subscription-access"
 import { getCaptchaToken } from "@/lib/chaptcha"
 
@@ -140,12 +140,12 @@ async function resolveActorUserId(userId?: string) {
 }
 
 async function ensureVideoGenerationAccess(
-  operation: CreditOperationType,
+  operation: AccessOperationType,
   userId?: string
 ) {
   const accessResult = userId
-    ? await checkSufficientCreditsByUserId(userId, operation)
-    : await checkSufficientCredits(operation)
+    ? await checkAccessByUserId(userId, operation)
+    : await checkAccess(operation)
 
   if (!accessResult.success) {
     return {
@@ -165,7 +165,7 @@ async function ensureVideoGenerationAccess(
 }
 
 async function resolveAuthorizedActor(
-  operation: CreditOperationType,
+  operation: AccessOperationType,
   userId?: string
 ) {
   const actorUserId = await resolveActorUserId(userId)
@@ -370,7 +370,7 @@ export async function generateTextToVideo(
 
 export async function checkVideoJobStatus(
   jobId: string,
-  operation?: CreditOperationType,
+  operation?: AccessOperationType,
   userId?: string
 ): Promise<VideoJobStatusResponse> {
   try {
@@ -560,7 +560,7 @@ export async function upscaleVideo(
 ): Promise<UpscaleVideoResponse> {
   try {
     const resolution = request.resolution || "1080p"
-    const accessOperation: CreditOperationType = resolution === "4K" ? "upscaleVideo4K" : "upscaleVideo"
+    const accessOperation: AccessOperationType = resolution === "4K" ? "upscaleVideo4K" : "upscaleVideo"
     const actor = await resolveAuthorizedActor(accessOperation, request.userId)
     if (!actor.success) {
       return { success: false, error: actor.error }

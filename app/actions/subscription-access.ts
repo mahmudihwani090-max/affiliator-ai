@@ -1,8 +1,7 @@
 import { auth } from "@/lib/auth"
-import { checkSubscriptionStatus } from "@/lib/subscription"
-import { type CreditOperationType } from "@/lib/credit-packages"
+import { checkSubscriptionStatus, type SubscriptionOperationType } from "@/lib/subscription"
 
-export type GenerationAccessOperation = CreditOperationType
+export type GenerationAccessOperation = SubscriptionOperationType
 
 export function getSubscriptionAccessErrorMessage(result: { error?: string }) {
     return result.error || "Subscription tidak aktif. Silakan berlangganan untuk menggunakan fitur generate."

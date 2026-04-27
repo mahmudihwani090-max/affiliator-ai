@@ -14,10 +14,10 @@ import {
 import { extractNestedErrorMessage, toUserFacingGenerationError } from "@/lib/generation-errors"
 import { logGenerationFailure } from "@/lib/generation-logger"
 import {
-  checkGenerationAccess as checkSufficientCredits,
-  checkGenerationAccessByUserId as checkSufficientCreditsByUserId,
+  checkGenerationAccess as checkAccess,
+  checkGenerationAccessByUserId as checkAccessByUserId,
   getSubscriptionAccessErrorMessage,
-  type GenerationAccessOperation as CreditOperationType,
+  type GenerationAccessOperation as AccessOperationType,
 } from "./subscription-access"
 import { getImageCaptchaToken } from "@/lib/chaptcha"
 
@@ -96,12 +96,12 @@ function logImageFailure(params: {
 }
 
 async function ensureImageGenerationAccess(
-  operation: CreditOperationType,
+  operation: AccessOperationType,
   userId?: string
 ) {
   const accessResult = userId
-    ? await checkSufficientCreditsByUserId(userId, operation)
-    : await checkSufficientCredits(operation)
+    ? await checkAccessByUserId(userId, operation)
+    : await checkAccess(operation)
 
   if (!accessResult.success) {
     return {
@@ -130,7 +130,7 @@ async function resolveActorUserId(userId?: string) {
 }
 
 async function resolveAuthorizedActor(
-  operation: CreditOperationType,
+  operation: AccessOperationType,
   userId?: string
 ) {
   const actorUserId = await resolveActorUserId(userId)
@@ -332,7 +332,7 @@ export async function generateTextToImage(
 
 export async function checkImageJobStatus(
   jobId: string,
-  operation?: CreditOperationType,
+  operation?: AccessOperationType,
   userId?: string
 ): Promise<JobStatusResponse> {
   try {

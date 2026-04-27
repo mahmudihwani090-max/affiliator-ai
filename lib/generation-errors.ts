@@ -84,7 +84,7 @@ function translateKnownError(message: string, context: GenerationErrorContext) {
   }
 
   if (lowerMessage.includes("quota") || lowerMessage.includes("billing") || lowerMessage.includes("insufficient credits")) {
-    return "Credit atau kuota generate Anda tidak cukup untuk menjalankan request ini."
+    return "Subscription Anda tidak aktif atau kuota generate sudah habis. Silakan aktifkan subscription."
   }
 
   if (lowerMessage.includes("invalid image") || lowerMessage.includes("failed to decode image") || lowerMessage.includes("too small")) {

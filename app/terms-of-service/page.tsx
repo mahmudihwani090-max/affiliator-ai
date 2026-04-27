@@ -55,15 +55,15 @@ export default function TermsOfServicePage() {
                         </section>
 
                         <section className="mb-8">
-                            <h2 className="text-xl font-semibold mb-4">4. Sistem Kredit</h2>
+                            <h2 className="text-xl font-semibold mb-4">4. Sistem Subscription</h2>
                             <p className="text-slate-600 dark:text-slate-400 mb-4">
-                                Layanan kami menggunakan sistem kredit untuk penggunaan fitur-fitur AI:
+                                Layanan kami menggunakan sistem subscription untuk akses fitur-fitur AI:
                             </p>
                             <ul className="list-disc list-inside text-slate-600 dark:text-slate-400 space-y-2">
-                                <li>Kredit dapat dibeli melalui metode pembayaran yang tersedia</li>
-                                <li>Kredit tidak dapat dikembalikan setelah digunakan</li>
-                                <li>Kredit memiliki masa berlaku sesuai paket yang dipilih</li>
-                                <li>Kami berhak mengubah harga kredit dengan pemberitahuan sebelumnya</li>
+                                <li>Subscription dapat dibeli melalui metode pembayaran yang tersedia</li>
+                                <li>Pembayaran subscription tidak dapat dikembalikan setelah diproses</li>
+                                <li>Subscription memiliki masa berlaku sesuai paket yang dipilih</li>
+                                <li>Kami berhak mengubah harga subscription dengan pemberitahuan sebelumnya</li>
                             </ul>
                         </section>
 

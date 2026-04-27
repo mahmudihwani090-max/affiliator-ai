@@ -516,7 +516,6 @@ export default function VideoGeneratorPage() {
                                                             <Zap className="w-4 h-4 mr-2" />
                                                             <div className="flex flex-col">
                                                                 <span>1080p HD {video.upscaledVersions?.some(v => v.resolution === "1080p") ? "✓" : ""}</span>
-                                                                <span className="text-xs text-muted-foreground">0.5 credit</span>
                                                             </div>
                                                         </DropdownMenuItem>
                                                         <DropdownMenuItem
@@ -526,7 +525,6 @@ export default function VideoGeneratorPage() {
                                                             <Zap className="w-4 h-4 mr-2 text-amber-500" />
                                                             <div className="flex flex-col">
                                                                 <span>4K Ultra HD {video.upscaledVersions?.some(v => v.resolution === "4K") ? "✓" : ""}</span>
-                                                                <span className="text-xs text-muted-foreground">0.5 credit</span>
                                                             </div>
                                                         </DropdownMenuItem>
                                                     </DropdownMenuContent>

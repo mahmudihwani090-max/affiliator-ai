@@ -2,6 +2,30 @@ import subscriptionPlanCatalog from "../prisma/subscription-plans.json";
 
 import { prisma } from "./prisma";
 
+/**
+ * Operation types for subscription access checks
+ */
+export type SubscriptionOperationType =
+  | "textToImage"
+  | "imageToImage"
+  | "upscaleImage"
+  | "upscaleVideo"
+  | "upscaleVideo4K"
+  | "extendVideo"
+  | "textToVideo"
+  | "imageToVideo";
+
+/**
+ * Format price in IDR
+ */
+export function formatPrice(price: number): string {
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    minimumFractionDigits: 0,
+  }).format(price);
+}
+
 export const LIFETIME_PLAN_LIMIT = 100;
 
 type SubscriptionPlanCatalogItem = {

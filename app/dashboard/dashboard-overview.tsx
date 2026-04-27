@@ -90,7 +90,7 @@ export function DashboardOverview() {
                       Subscription Plans
                     </CardTitle>
                     <CardDescription>
-                      Aktifkan subscription untuk membuka semua fitur AI generator tanpa sistem kredit
+                      Aktifkan subscription untuk membuka semua fitur AI generator
                     </CardDescription>
                   </div>
                 </div>

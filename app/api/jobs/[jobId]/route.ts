@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { checkImageJobStatus } from "@/app/actions/generate-image"
 import { checkVideoJobStatus } from "@/app/actions/generate-video"
 import { validateApiOrSessionRequest, unauthorizedResponse } from "@/lib/api-auth"
-import { type CreditOperationType } from "@/lib/credit-packages"
+import { type SubscriptionOperationType } from "@/lib/subscription"
 
 const VIDEO_OPERATIONS = new Set([
     "textToVideo",
@@ -66,9 +66,9 @@ export async function GET(
         let result
 
         if (isVideoJob) {
-            result = await checkVideoJobStatus(jobId, operation as CreditOperationType | undefined, authResult.userId)
+            result = await checkVideoJobStatus(jobId, operation as SubscriptionOperationType | undefined, authResult.userId)
         } else {
-            result = await checkImageJobStatus(jobId, operation as CreditOperationType | undefined, authResult.userId)
+            result = await checkImageJobStatus(jobId, operation as SubscriptionOperationType | undefined, authResult.userId)
         }
 
         return NextResponse.json(result, { headers: corsHeaders })

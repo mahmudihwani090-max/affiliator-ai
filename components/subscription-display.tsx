@@ -1,8 +1,8 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Coins, RefreshCw, AlertCircle } from "lucide-react"
-import { getUserSubscriptionStatus } from "@/app/actions/credit"
+import { Crown, RefreshCw, AlertCircle } from "lucide-react"
+import { getUserSubscriptionStatus } from "@/app/actions/subscription"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
@@ -17,17 +17,17 @@ type SubscriptionSnapshot = {
     isActive: boolean
 }
 
-interface CreditDisplayProps {
+interface SubscriptionDisplayProps {
     compact?: boolean
     className?: string
     showBuyButton?: boolean
 }
 
-export function CreditDisplay({
+export function SubscriptionDisplay({
     compact = false,
     className,
     showBuyButton = true
-}: CreditDisplayProps) {
+}: SubscriptionDisplayProps) {
     const [subscription, setSubscription] = useState<SubscriptionSnapshot | null>(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
@@ -78,7 +78,7 @@ export function CreditDisplay({
                 )}
             >
                 <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-amber-500/20 to-yellow-500/20">
-                    <Coins className="w-4 h-4 text-amber-500" />
+                    <Crown className="w-4 h-4 text-amber-500" />
                 </div>
                 <div className="flex flex-col group-data-[collapsible=icon]:hidden">
                     <span className="text-xs text-muted-foreground">Subscription</span>
@@ -100,7 +100,7 @@ export function CreditDisplay({
             className
         )}>
             <div className="flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-amber-500/20 to-yellow-500/20">
-                <Coins className="w-6 h-6 text-amber-500" />
+                <Crown className="w-6 h-6 text-amber-500" />
             </div>
 
             <div className="flex-1">
@@ -142,7 +142,7 @@ export function CreditDisplay({
     )
 }
 
-export function useCredits() {
+export function useSubscription() {
     const [subscription, setSubscription] = useState<SubscriptionSnapshot | null>(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)

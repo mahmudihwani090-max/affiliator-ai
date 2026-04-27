@@ -46,7 +46,7 @@ function getPlanFeatures(plan: Awaited<ReturnType<typeof listPublicSubscriptionP
   return [
     'Akses semua AI image & video tools',
     plan.isLifetime ? 'Tanpa masa berlaku' : `${plan.durationDays || 0} hari akses penuh`,
-    'Generate tanpa potong kredit per request',
+    'Generate tanpa batas per request',
     plan.isLifetime ? 'Batch founding member dengan kuota terbatas' : 'Aktivasi subscription otomatis setelah pembayaran',
   ];
 }
