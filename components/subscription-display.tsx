@@ -56,14 +56,26 @@ export function SubscriptionDisplay({
         return () => clearInterval(interval)
     }, [])
 
+    const getRemainingDays = () => {
+        if (!subscription?.isActive || !subscription.endDate) return null
+        const now = new Date()
+        const end = new Date(subscription.endDate)
+        const diffMs = end.getTime() - now.getTime()
+        return Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)))
+    }
+
+    const remainingDays = getRemainingDays()
+
     const subscriptionLabel = subscription?.isActive
-        ? subscription.planName
+        ? (remainingDays !== null
+            ? `Tersisa ${remainingDays} hari`
+            : subscription.planName)
         : "Belum aktif"
 
     const subscriptionMeta = subscription?.isActive
         ? (subscription.endDate
-            ? `Aktif sampai ${new Date(subscription.endDate).toLocaleDateString("id-ID")}`
-            : "Aktif")
+            ? `${subscription.planName} · s/d ${new Date(subscription.endDate).toLocaleDateString("id-ID")}`
+            : `${subscription.planName} · Aktif`)
         : "Pilih plan untuk mulai generate"
 
     if (compact) {

@@ -21,6 +21,7 @@ import {
   Crown,
   Shield,
   FolderOpen,
+  Sparkles,
 } from "lucide-react"
 
 // Navigation items
@@ -84,6 +85,11 @@ const baseNavItems = [
         url: "/dashboard/motion-control",
       }
     ],
+  },
+  {
+    title: "Affiliator Machine",
+    url: "/dashboard/affiliator-machine",
+    icon: Sparkles,
   },
   {
     title: "Subscription",

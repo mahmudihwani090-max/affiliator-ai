@@ -25,9 +25,10 @@ model User {
   referrals       Referral[]      @relation("UserReferrals")
   sessions        Session[]
   subscriptions   Subscription[]
-  transactions    Transaction[]
-  usageStats      UsageStats[]
-  videoQueueItems VideoQueueItem[]
+  transactions      Transaction[]
+  usageStats        UsageStats[]
+  videoQueueItems   VideoQueueItem[]
+  affiliateProducts AffiliateProduct[]
 
   @@map("users")
 }
@@ -228,4 +229,31 @@ model VideoQueueItem {
   @@index([userId, status, createdAt])
   @@index([userId, operation, createdAt])
   @@map("video_queue_items")
+}
+
+model AffiliateProduct {
+  id             String   @id @default(cuid())
+  name           String
+  description    String
+  price          Int
+  originalPrice  Int?
+  category       String
+  platform       String   @default("tiktok")
+  productUrl     String?
+  imageUrl       String?
+  sellingPoints  String
+  targetAudience String?
+  commission     String?
+  isFeatured     Boolean  @default(false)
+  isActive       Boolean  @default(true)
+  source         String   @default("admin")
+  createdById    String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  createdBy      User?    @relation(fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@index([category, isActive])
+  @@index([platform, isActive])
+  @@index([isFeatured, isActive])
+  @@map("affiliate_products")
 }
