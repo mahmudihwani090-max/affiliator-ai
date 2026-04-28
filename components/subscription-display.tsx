@@ -61,17 +61,15 @@ export function SubscriptionDisplay({
         : "Belum aktif"
 
     const subscriptionMeta = subscription?.isActive
-        ? (subscription.isLifetime
-            ? "Lifetime"
-            : subscription.endDate
-                ? `Aktif sampai ${new Date(subscription.endDate).toLocaleDateString("id-ID")}`
-                : "Aktif")
+        ? (subscription.endDate
+            ? `Aktif sampai ${new Date(subscription.endDate).toLocaleDateString("id-ID")}`
+            : "Aktif")
         : "Pilih plan untuk mulai generate"
 
     if (compact) {
         return (
             <Link
-                href="/dashboard/credits"
+                href="/dashboard/subscription"
                 className={cn(
                     "flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-accent transition-colors",
                     className
@@ -132,7 +130,7 @@ export function SubscriptionDisplay({
             </div>
 
             {showBuyButton && (
-                <Link href="/dashboard/credits">
+                <Link href="/dashboard/subscription">
                     <Button size="sm" variant="default" className="bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white">
                         Pilih Plan
                     </Button>

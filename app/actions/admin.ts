@@ -324,7 +324,7 @@ export async function saveSubscriptionPlan(data: {
         })
 
         revalidatePath("/admin/packages")
-        revalidatePath("/dashboard/credits")
+        revalidatePath("/dashboard/subscription")
 
         return {
             success: true,
@@ -505,7 +505,7 @@ export async function updateUser(
 
         revalidatePath("/admin/users")
         revalidatePath("/dashboard")
-        revalidatePath("/dashboard/credits")
+        revalidatePath("/dashboard/subscription")
         revalidatePath("/dashboard/projects")
         return {
             success: true,

@@ -35,7 +35,7 @@ import {
     updateTransactionStatus,
     type AdminTransaction,
 } from "@/app/actions/admin"
-import { formatPrice } from "@/lib/subscription"
+import { formatPrice } from "@/lib/format-price"
 
 function formatDate(date: Date) {
     return new Intl.DateTimeFormat("id-ID", {

@@ -107,8 +107,8 @@ export function buildMidtransCallbacks(originSite: string, orderId: string) {
   }
 
   return {
-    finish: `${safeOrigin}/dashboard/credits?payment=finish&orderId=${encodeURIComponent(orderId)}`,
-    pending: `${safeOrigin}/dashboard/credits?payment=pending&orderId=${encodeURIComponent(orderId)}`,
-    error: `${safeOrigin}/dashboard/credits?payment=error&orderId=${encodeURIComponent(orderId)}`,
+    finish: `${safeOrigin}/dashboard/subscription?payment=finish&orderId=${encodeURIComponent(orderId)}`,
+    pending: `${safeOrigin}/dashboard/subscription?payment=pending&orderId=${encodeURIComponent(orderId)}`,
+    error: `${safeOrigin}/dashboard/subscription?payment=error&orderId=${encodeURIComponent(orderId)}`,
   }
 }

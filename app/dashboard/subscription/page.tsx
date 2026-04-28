@@ -15,11 +15,11 @@ import {
     Loader2,
     ImageIcon,
     Video,
-    Infinity,
     Shield,
+    CalendarDays,
 } from "lucide-react"
 import { SubscriptionDisplay } from "@/components/subscription-display"
-import { formatPrice } from "@/lib/subscription"
+import { formatPrice } from "@/lib/format-price"
 import { getSubscriptionHistory, getSubscriptionPlans } from "@/app/actions/subscription"
 import { toast } from "sonner"
 import { useSearchParams } from "next/navigation"
@@ -39,16 +39,16 @@ interface SubscriptionPlanItem {
     availabilityNote: string | null
 }
 
-const packageIcons = {
+const packageIcons: Record<string, typeof Zap> = {
     "weekly-7-days": Zap,
     "monthly-30-days": Sparkles,
-    lifetime: Crown,
+    "yearly-365-days": Crown,
 }
 
-const packageColors = {
+const packageColors: Record<string, string> = {
     "weekly-7-days": "from-blue-500 to-cyan-500",
     "monthly-30-days": "from-purple-500 to-pink-500",
-    lifetime: "from-amber-500 to-orange-500",
+    "yearly-365-days": "from-amber-500 to-orange-500",
 }
 
 interface SubscriptionHistoryItem {
@@ -61,7 +61,30 @@ interface SubscriptionHistoryItem {
     createdAt: Date
 }
 
-export default function CreditsPage() {
+function formatPricePerDay(price: number, durationDays: number | null): string {
+    if (!durationDays || durationDays <= 0) return "-"
+    const perDay = Math.ceil(price / durationDays)
+    return new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        minimumFractionDigits: 0,
+    }).format(perDay)
+}
+
+function formatDuration(durationDays: number | null): string {
+    if (!durationDays) return "-"
+    if (durationDays >= 365) {
+        const years = Math.floor(durationDays / 365)
+        return `${years} tahun`
+    }
+    if (durationDays >= 30) {
+        const months = Math.floor(durationDays / 30)
+        return `${months} bulan`
+    }
+    return `${durationDays} hari`
+}
+
+export default function SubscriptionPage() {
     const searchParams = useSearchParams()
     const planFromUrl = searchParams.get("plan")
     const autoPurchaseTriggered = useRef(false)
@@ -192,9 +215,11 @@ export default function CreditsPage() {
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                             {plans.map((plan) => {
-                                const Icon = packageIcons[plan.code as keyof typeof packageIcons] || Coins
-                                const colorClass = packageColors[plan.code as keyof typeof packageColors] || "from-slate-500 to-slate-700"
+                                const Icon = packageIcons[plan.code] || Coins
+                                const colorClass = packageColors[plan.code] || "from-slate-500 to-slate-700"
                                 const isPopular = plan.code === "monthly-30-days"
+                                const pricePerDay = formatPricePerDay(plan.price, plan.durationDays)
+                                const duration = formatDuration(plan.durationDays)
 
                                 return (
                                     <Card
@@ -220,6 +245,14 @@ export default function CreditsPage() {
                                         <CardContent className="space-y-4">
                                             <div>
                                                 <span className="text-3xl font-bold">{formatPrice(plan.price)}</span>
+                                                <span className="text-muted-foreground ml-1">/ {duration}</span>
+                                            </div>
+
+                                            <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-muted/60">
+                                                <CalendarDays className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                                                <span className="text-sm text-muted-foreground">
+                                                    Hanya <span className="font-semibold text-foreground">{pricePerDay}</span> / hari
+                                                </span>
                                             </div>
 
                                             <div className="space-y-2">
@@ -229,18 +262,12 @@ export default function CreditsPage() {
                                                 </div>
                                                 <div className="flex items-center gap-2">
                                                     <Check className="w-4 h-4 text-green-500" />
-                                                    <span>{plan.isLifetime ? "Tanpa masa berlaku" : `${plan.durationDays} hari akses penuh`}</span>
+                                                    <span>{duration} akses penuh</span>
                                                 </div>
                                                 <div className="flex items-center gap-2">
                                                     <Check className="w-4 h-4 text-green-500" />
                                                     <span>Generate tanpa batas per request</span>
                                                 </div>
-                                                {plan.availabilityNote ? (
-                                                    <div className="flex items-center gap-2">
-                                                        <Check className={`w-4 h-4 ${plan.isAvailable ? 'text-green-500' : 'text-red-500'}`} />
-                                                        <span>{plan.availabilityNote}</span>
-                                                    </div>
-                                                ) : null}
                                             </div>
                                         </CardContent>
 
@@ -334,7 +361,7 @@ export default function CreditsPage() {
                                         </div>
                                         <div>
                                             <p className="font-medium">Upscale & Extend</p>
-                                            <p className="text-sm text-muted-foreground">Upcale image/video dan extend video</p>
+                                            <p className="text-sm text-muted-foreground">Upscale image/video dan extend video</p>
                                         </div>
                                     </div>
                                     <Badge variant="secondary" className="text-lg">Included</Badge>
@@ -343,11 +370,11 @@ export default function CreditsPage() {
                                 <div className="flex items-center justify-between p-4 rounded-lg bg-muted/50">
                                     <div className="flex items-center gap-3">
                                         <div className="w-10 h-10 rounded-lg bg-amber-500/20 flex items-center justify-center">
-                                            <Infinity className="w-5 h-5 text-amber-500" />
+                                            <Crown className="w-5 h-5 text-amber-500" />
                                         </div>
                                         <div>
-                                            <p className="font-medium">Lifetime Option</p>
-                                            <p className="text-sm text-muted-foreground">Akses permanen untuk penggunaan jangka panjang</p>
+                                            <p className="font-medium">Paket Tahunan</p>
+                                            <p className="text-sm text-muted-foreground">Hemat lebih banyak dengan berlangganan setahun</p>
                                         </div>
                                     </div>
                                     <Badge variant="secondary" className="text-lg">Available</Badge>

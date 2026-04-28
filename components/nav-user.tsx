@@ -85,7 +85,7 @@ export function NavUser({
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem asChild>
-                <Link href="/dashboard/credits" className="flex w-full items-center">
+                <Link href="/dashboard/subscription" className="flex w-full items-center">
                   <CreditCard className="mr-2 h-4 w-4" />
                   Subscription
                 </Link>

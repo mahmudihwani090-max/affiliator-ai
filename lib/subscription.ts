@@ -1,6 +1,7 @@
 import subscriptionPlanCatalog from "../prisma/subscription-plans.json";
 
 import { prisma } from "./prisma";
+export { formatPrice } from "./format-price";
 
 /**
  * Operation types for subscription access checks
@@ -15,18 +16,7 @@ export type SubscriptionOperationType =
   | "textToVideo"
   | "imageToVideo";
 
-/**
- * Format price in IDR
- */
-export function formatPrice(price: number): string {
-  return new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    minimumFractionDigits: 0,
-  }).format(price);
-}
 
-export const LIFETIME_PLAN_LIMIT = 100;
 
 type SubscriptionPlanCatalogItem = {
   code: string;
@@ -92,54 +82,16 @@ function findCatalogPlanByCode(code: string): SubscriptionPlanRecord | null {
   return mapCatalogPlans().find((plan) => plan.code === code) ?? null;
 }
 
-async function getClaimedLifetimeSlots() {
-  try {
-    const claimedLifetimeUsers = await prisma.transaction.findMany({
-      where: {
-        isLifetime: true,
-        status: {
-          in: ["pending", "success"],
-        },
-      },
-      distinct: ["userId"],
-      select: {
-        userId: true,
-      },
-    });
-
-    return claimedLifetimeUsers.length;
-  } catch {
-    return 0;
-  }
-}
-
 function toPublicSubscriptionPlan(
-  plan: SubscriptionPlanRecord,
-  claimedLifetimeSlots: number
+  plan: SubscriptionPlanRecord
 ): PublicSubscriptionPlan {
-  if (!plan.isLifetime) {
-    return {
-      ...plan,
-      isAvailable: plan.isActive,
-      limit: null,
-      claimedSlots: null,
-      remainingSlots: null,
-      availabilityNote: null,
-    };
-  }
-
-  const remainingSlots = Math.max(0, LIFETIME_PLAN_LIMIT - claimedLifetimeSlots);
-  const isAvailable = plan.isActive && remainingSlots > 0;
-
   return {
     ...plan,
-    isAvailable,
-    limit: LIFETIME_PLAN_LIMIT,
-    claimedSlots: claimedLifetimeSlots,
-    remainingSlots,
-    availabilityNote: isAvailable
-      ? `Terbatas untuk ${LIFETIME_PLAN_LIMIT} pembeli pertama. Sisa ${remainingSlots} slot.`
-      : `Kuota Lifetime ${LIFETIME_PLAN_LIMIT} pembeli pertama sudah habis.`,
+    isAvailable: plan.isActive,
+    limit: null,
+    claimedSlots: null,
+    remainingSlots: null,
+    availabilityNote: null,
   };
 }
 
@@ -216,12 +168,8 @@ export async function listActiveSubscriptionPlans() {
 }
 
 export async function listPublicSubscriptionPlans() {
-  const [plans, claimedLifetimeSlots] = await Promise.all([
-    listActiveSubscriptionPlans(),
-    getClaimedLifetimeSlots(),
-  ]);
-
-  return plans.map((plan) => toPublicSubscriptionPlan(plan, claimedLifetimeSlots));
+  const plans = await listActiveSubscriptionPlans();
+  return plans.map((plan) => toPublicSubscriptionPlan(plan));
 }
 
 export async function listSubscriptionPlans() {
@@ -266,16 +214,13 @@ export async function getSubscriptionPlanByCode(code: string) {
 }
 
 export async function getPublicSubscriptionPlanByCode(code: string) {
-  const [plan, claimedLifetimeSlots] = await Promise.all([
-    getSubscriptionPlanByCode(code),
-    getClaimedLifetimeSlots(),
-  ]);
+  const plan = await getSubscriptionPlanByCode(code);
 
   if (!plan) {
     return null;
   }
 
-  return toPublicSubscriptionPlan(plan, claimedLifetimeSlots);
+  return toPublicSubscriptionPlan(plan);
 }
 
 export async function getActiveSubscriptionByUserId(userId: string) {

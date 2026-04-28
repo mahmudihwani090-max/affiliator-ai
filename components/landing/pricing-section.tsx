@@ -23,7 +23,7 @@ interface PricingPlan {
 const pricingGradientMap: Record<string, string> = {
   'weekly-7-days': 'from-blue-500 to-indigo-600',
   'monthly-30-days': 'from-purple-500 to-pink-600',
-  lifetime: 'from-orange-500 to-red-600',
+  'yearly-365-days': 'from-orange-500 to-red-600',
 };
 
 function formatPlanPrice(price: number) {
@@ -39,15 +39,24 @@ function getPlanDuration(durationDays: number | null, isLifetime: boolean) {
     return 'sekali bayar';
   }
 
+  if (durationDays && durationDays >= 365) {
+    const years = Math.floor(durationDays / 365);
+    return `${years} tahun akses penuh`;
+  }
+
   return `${durationDays || 0} hari akses penuh`;
 }
 
 function getPlanFeatures(plan: Awaited<ReturnType<typeof listPublicSubscriptionPlans>>[number]) {
+  const durationLabel = plan.durationDays && plan.durationDays >= 365
+    ? `${Math.floor(plan.durationDays / 365)} tahun akses penuh`
+    : `${plan.durationDays || 0} hari akses penuh`;
+
   return [
     'Akses semua AI image & video tools',
-    plan.isLifetime ? 'Tanpa masa berlaku' : `${plan.durationDays || 0} hari akses penuh`,
+    durationLabel,
     'Generate tanpa batas per request',
-    plan.isLifetime ? 'Batch founding member dengan kuota terbatas' : 'Aktivasi subscription otomatis setelah pembayaran',
+    'Aktivasi subscription otomatis setelah pembayaran',
   ];
 }
 
@@ -104,15 +113,7 @@ export async function PricingSection() {
                       <CardDescription className="mt-4 dark:text-slate-400 text-xs">
                         {plan.description}
                       </CardDescription>
-                      {plan.isLifetime ? (
-                        <div className="mt-4 flex justify-center">
-                          <Badge variant={plan.isAvailable ? 'secondary' : 'destructive'} className="text-[10px]">
-                            {plan.isAvailable && plan.remainingSlots !== null
-                              ? `Lifetime tersisa ${plan.remainingSlots} slot`
-                              : 'Lifetime sold out'}
-                          </Badge>
-                        </div>
-                      ) : null}
+
                     </CardHeader>
                     <CardContent>
                       <ul className="space-y-3 mb-8">
@@ -129,7 +130,7 @@ export async function PricingSection() {
                         </p>
                       ) : null}
                       {plan.isAvailable ? (
-                        <a href={`/auth/login?callbackUrl=${encodeURIComponent(`/dashboard/credits?plan=${plan.code}`)}`}>
+                        <a href={`/auth/login?callbackUrl=${encodeURIComponent(`/dashboard/subscription?plan=${plan.code}`)}`}>
                           <Button
                             className={`w-full ${plan.popular ? 'bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700' : ''}`}
                             size="lg"

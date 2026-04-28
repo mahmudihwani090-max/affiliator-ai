@@ -76,7 +76,7 @@ export function DashboardOverview() {
 
       {/* Subscription Section */}
       <div>
-        <Link href="/dashboard/credits">
+        <Link href="/dashboard/subscription">
           <Card className="group relative overflow-hidden transition-all hover:shadow-lg hover:shadow-amber-500/10 hover:border-amber-500/50 cursor-pointer">
             <div className="absolute inset-0 bg-gradient-to-br from-amber-500 to-orange-500 opacity-0 transition-opacity group-hover:opacity-5" />
             <CardHeader>

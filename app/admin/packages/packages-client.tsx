@@ -16,7 +16,7 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { formatPrice } from "@/lib/subscription"
+import { formatPrice } from "@/lib/format-price"
 import { FileImage, FileVideo, ImageIcon, Package, Save, Video, Zap } from "lucide-react"
 import { toast } from "sonner"
 

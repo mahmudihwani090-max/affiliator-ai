@@ -87,7 +87,7 @@ const baseNavItems = [
   },
   {
     title: "Subscription",
-    url: "/dashboard/credits",
+    url: "/dashboard/subscription",
     icon: Crown,
   },
   // {

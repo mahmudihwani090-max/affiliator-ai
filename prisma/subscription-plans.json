@@ -18,12 +18,12 @@
     "isActive": true
   },
   {
-    "code": "lifetime",
-    "name": "Lifetime",
-    "description": "Akses subscription seumur hidup tanpa tanggal kedaluwarsa",
-    "price": 350000,
-    "durationDays": null,
-    "isLifetime": true,
+    "code": "yearly-365-days",
+    "name": "1 Tahun",
+    "description": "Akses subscription penuh selama 1 tahun",
+    "price": 365000,
+    "durationDays": 365,
+    "isLifetime": false,
     "isActive": true
   }
 ]
